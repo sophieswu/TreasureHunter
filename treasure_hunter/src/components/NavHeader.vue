@@ -11,14 +11,15 @@
       <div class="navbar">
         <div class="navbar-left-container">
           <a href="/">
-            <img width="200" height="40" class="navbar-brand-logo" src="static/logo.png"></a>
+            <img width="200" height="40" class="navbar-brand-logo offset" src="static/logo.png"></a>
         </div>
         <div class="navbar-right-container" style="display: flex;">
           <div class="navbar-menu-container">
             <!--<a href="/" class="navbar-link">My account</a>-->
             <span class="navbar-link"></span>
-            <a href="javascript:void(0)" class="navbar-link">Login</a>
-            <a href="javascript:void(0)" class="navbar-link">Logout</a>
+            <span v-if="nickName">Hi, {{ nickName }}</span>
+            <a href="javascript:void(0)" class="navbar-link" v-if="!nickName" @click="loginModalFlag=true">Login</a>
+            <a href="javascript:void(0)" class="navbar-link" v-else @click="logOut">Logout</a>
             <div class="navbar-cart-container">
               <span class="navbar-cart-count"></span>
               <a class="navbar-link navbar-cart-link" href="/#/cart">
@@ -29,20 +30,90 @@
             </div>
           </div>
         </div>
+
+        <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':loginModalFlag}">
+          <div class="md-modal-inner">
+            <div class="md-top">
+              <div class="md-title">Login in</div>
+              <button class="md-close" @click="loginModalFlag=false">Close</button>
+            </div>
+            <div class="md-content">
+              <div class="confirm-tips">
+                <div class="error-wrap">
+                  <span class="error error-show" v-if="errorTip">Username or Password incorrect</span>
+                </div>
+                <ul>
+                  <li class="regi_form_input">
+                    <i class="icon IconPeople"></i>
+                    <input type="text" tabindex="1" name="loginname" v-model="userName" class="regi_login_input regi_login_input_left" placeholder="User Name" data-type="loginname">
+                  </li>
+                  <li class="regi_form_input noMargin">
+                    <i class="icon IconPwd"></i>
+                    <input type="password" tabindex="2" name="password" v-model="userPwd" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" @keyup.enter="login">
+                  </li>
+                </ul>
+              </div>
+              <div class="login-wrap">
+                <a href="javascript:;" class="btn-login" @click="login">Log In</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="md-overlay" v-if="loginModalFlag" @click="loginModalFlag=false"></div>
       </div>
     </header>
   </div>
 </template>
 
-<script>
+<style>
+.offset {
+  margin: 20px 0px 10px 20px;
+}
+</style>
 
+
+<script>
+import './../assets/css/login.css'
+import axios from 'axios'
 export default {
   data() {
     return {
-
+      userName: '',
+      userPwd: '',
+      errorTip: false,
+      loginModalFlag: false,
+      nickName: ''
     }
   },
   methods: {
+    login() {
+      if (!this.userName || !this.userPwd) {
+        this.errorTip = true;
+        return;
+      }
+      axios.post("/users/login", {
+        userName: this.userName,
+        userPwd: this.userPwd
+      }).then((response) => {
+        let res = response.data;
+        if (res.status == '0') {
+          this.errorTip = false;
+          this.loginModalFlag = false;
+          this.nickName = res.result.nickName;
+        } else {
+          this.errorTip = true;
+
+        }
+      });
+    },
+    logOut() {
+      axios.post("/users/logout").then((response) => {
+        let res = response.data;
+        if (res.status == "0") {
+          this.nickName = '';
+        }
+      })
+    },
   },
   components: {
   }
