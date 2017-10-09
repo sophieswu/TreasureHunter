@@ -1,4 +1,4 @@
-var userModel = require('./../models/user');
+var userModel = require('../models/user');
 var jwt = require('jwt-simple');
 var moment = require('moment');
 var config = require('./config');
@@ -10,7 +10,32 @@ var createToken = function(user) {
         iat: moment().unix(),
         sub: user._id
     };
+
     return jwt.encode(payload, config.tokenSecret);
+};
+
+var isAuthenticated = function(req, res, next) {
+    if (!(req.headers && req.headers.authorization)) {
+        return res.status(400).send({message: 'No Token.'});
+    }
+
+    var header = req.headers.authorization.split(' ');
+    var token = header[1];
+    
+    var payload = jwt.decode(token, config.tokenSecret);
+    var now = moment().unix();
+
+    if (now > payload.exp) {
+        return res.status(401).send({message: 'Token has expired.'});
+    }
+
+    userModel.findById(payload.sub, function(err, user) {
+        if (!user) {
+            return res.status(400).send({message: 'User does not exist.'});
+        }
+        req.user = user;
+        next(req, res);
+    });
 };
 
 var getUser = function(req, callback) {
@@ -26,6 +51,7 @@ var getUser = function(req, callback) {
 
     userModel.findById(userId, function(err, user) {
         if (err) {
+          
             callback(err);
             return;
         }
@@ -87,7 +113,7 @@ var login = function(email, password, callback) {
 };
 
 module.exports = {
-    // isAuthenticated: isAuthenticated,
+    isAuthenticated: isAuthenticated,
     getUser: getUser,
     reg: reg,
     login: login
