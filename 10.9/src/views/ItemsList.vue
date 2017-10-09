@@ -2,7 +2,8 @@
   <div>
     <nav-header></nav-header>
     <nav-bread>
-      <span>Goods</span>
+      <a hfre="\">Buy it Now</a>
+      <a hfre="\">Auctions</a>
     </nav-bread>
     <div class="accessory-result-page accessory-page">
       <div class="container">

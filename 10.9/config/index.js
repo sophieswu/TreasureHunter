@@ -31,8 +31,8 @@ module.exports = {
       '/items':{
         target:'http://localhost:3000'
     },
-    '/items/*':{
-      target:'http://localhost:3000'
+      '/items/*':{
+        target:'http://localhost:3000'
     },
       '/users/*':{
         target:'http://localhost:3000'
