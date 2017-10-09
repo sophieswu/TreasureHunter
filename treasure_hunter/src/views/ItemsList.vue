@@ -145,13 +145,10 @@ export default {
             } else {
               this.busy = false;
             }
-            console.log(res);
             this.itemsList =  this.itemsList.concat(res.result.list);
           } else {
-            console.log("this is here");
             this.itemsList =  res.result.list;
             this.busy = false;
-            console.log(this.itemsList);
           }
         } else {
           this.itemsList = [];
