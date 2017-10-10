@@ -1,2 +1,0 @@
-# term-project-team
-test
