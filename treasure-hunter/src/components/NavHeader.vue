@@ -19,7 +19,6 @@
             <span class="navbar-link"></span>
             <span v-if="nickName">Hi, {{ nickName }}</span>
             <a href="javascript:void(0)" class="navbar-link" v-if="!nickName" @click="loginModalFlag=true">Login</a>
-            <a href="javascript:void(0)" class="navbar-link" v-if="!nickName" @click="registerModalFlag=true">Register</a>
             <a href="javascript:void(0)" class="navbar-link" v-else @click="logOut">Logout</a>
             <div class="navbar-cart-container">
               <span class="navbar-cart-count"></span>
@@ -41,16 +40,16 @@
             <div class="md-content">
               <div class="confirm-tips">
                 <div class="error-wrap">
-                  <span class="error error-show" v-if="errorTip">{{ errorMsg }}</span>
+                  <span class="error error-show" v-if="errorTip">Username or Password incorrect</span>
                 </div>
                 <ul>
                   <li class="regi_form_input">
                     <i class="icon IconPeople"></i>
-                    <input type="text" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
+                    <input type="text" tabindex="1" name="loginname" v-model="userName" class="regi_login_input regi_login_input_left" placeholder="User Name" data-type="loginname">
                   </li>
                   <li class="regi_form_input noMargin">
                     <i class="icon IconPwd"></i>
-                    <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password">
+                    <input type="password" tabindex="2" name="password" v-model="userPwd" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" @keyup.enter="login">
                   </li>
                 </ul>
               </div>
@@ -60,43 +59,7 @@
             </div>
           </div>
         </div>
-
-         <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':registerModalFlag}">
-          <div class="md-modal-inner">
-            <div class="md-top">
-              <div class="md-title">Register</div>
-              <button class="md-close" @click="registerModalFlag=false">Close</button>
-            </div>
-            <div class="md-content">
-              <div class="confirm-tips">
-                <div class="error-wrap">
-                  <span class="error error-show" v-if="errorTip">email or Password incorrect</span>
-                </div>
-                <ul>
-                  <li class="regi_form_input">
-                    <i class="icon IconPeople"></i>
-                    <input type="text" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
-                  </li>
-                  <li class="regi_form_input noMargin">
-                    <i class="icon IconPwd"></i>
-                    <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" 
-                    >
-                  </li>
-                  <li class="regi_form_input noMargin">
-                    <i class="icon IconPwd"></i>
-                    <input type="text" tabindex="2" name="fullName" v-model="fullname" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Full Name" 
-                    >
-                  </li>
-                </ul>
-              </div>
-              <div class="login-wrap">
-                <a href="javascript:;" class="btn-login" @click="signup">Sign Up</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="md-overlay" v-if="loginModalFlag || registerModalFlag" @click="loginModalFlag=false; registerModalFlag=false"></div>
+        <div class="md-overlay" v-if="loginModalFlag" @click="loginModalFlag=false"></div>
       </div>
     </header>
   </div>
@@ -115,86 +78,41 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      email: '',
-      password: '',
+      userName: '',
+      userPwd: '',
       errorTip: false,
-      errorMsg: "",
       loginModalFlag: false,
-      registerModalFlag: false,
-      fullname:'',
       nickName: ''
     }
   },
-  mounted(){
-    this.checkLogin();
-  },
   methods: {
-    checkLogin() {
-      let token = localStorage.getItem("token");
-      let config = {
-        headers: {'Authorization': "bearer " + token}
-      };
-      axios.get("/users/isLoggedIn", config).then((response) => {
-        let res = response.data;
-        this.nickName = res;
-      }).catch((err) => {
-        console.log("not logged in yet");
-      });
-    },
-
-    signup() {
-      let param = {
-        email: this.email,
-        password: this.password,
-        fullname: this.fullname
-      };
-      axios.post("/users/reg", param).then((response) => {
-        let res = response.data;
-        if (res.status != "1"){
-          console.log(res.result);
-          this.nickName = res.result;
-        } 
-      }).catch((err) =>{
-        this.errorTip = true;
-        this.errorMsg = err.message;
-      });
-    },
-
     login() {
-      if (!this.email || !this.password) {
+      if (!this.userName || !this.userPwd) {
         this.errorTip = true;
-        this.errorMsg = "email or Password incorrect";
         return;
       }
-
-      let param = {
-        email: this.email,
-        password: this.password
-      };
-
-      axios.post("/users/login", param).then((response) => {
+      axios.post("/users/login", {
+        userName: this.userName,
+        userPwd: this.userPwd
+      }).then((response) => {
         let res = response.data;
-    
-        console.log(response);
-        if (response.status == 200) {
+        if (res.status == '0') {
           this.errorTip = false;
           this.loginModalFlag = false;
-          console.log(res.user);
-          console.log(res.token);
-          this.nickName = res.user.fullname;
-          localStorage.setItem("token", res.token);
+          this.nickName = res.result.nickName;
+        } else {
+          this.errorTip = true;
+
         }
-      }).catch((err) =>{
-        this.errorTip = true;
-        this.errorMsg = err.message;
       });
     },
-  
     logOut() {
-      localStorage.removeItem('token');
-      this.nickName = '';
-      this.username = '';
-      this.password = '';
+      axios.post("/users/logout").then((response) => {
+        let res = response.data;
+        if (res.status == "0") {
+          this.nickName = '';
+        }
+      })
     },
   },
   components: {
