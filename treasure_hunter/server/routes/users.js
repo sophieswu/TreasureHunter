@@ -33,8 +33,7 @@ router.get('/isLoggedIn', function(req, res) {
   authService.isAuthenticated(req, res, (req, res) => {
     if(req.user){
       res.status(200).send(req.user.fullname);
-    }
-        
+    }   
   });
 });
 
