@@ -1,2 +1,18 @@
+<<<<<<< HEAD
 */.DS_Store
 .DS_Store
+=======
+*.DS_Store
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+>>>>>>> 590390afac9b71298a3e870de17275b9cea49ba2
