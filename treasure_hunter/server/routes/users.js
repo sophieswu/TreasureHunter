@@ -24,7 +24,7 @@ authService.reg(req.body.email, req.body.password, req.body.fullname,
         if (json.status === 409) {
             res.status(409).send({message: json.message});
         } else {
-            res.send({token: json.token});
+            res.status(200).send({token: json.token});
         }
     });
 });

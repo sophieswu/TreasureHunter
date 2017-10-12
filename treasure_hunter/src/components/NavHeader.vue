@@ -38,26 +38,28 @@
               <div class="md-title">Login in</div>
               <button class="md-close" @click="loginModalFlag=false">Close</button>
             </div>
-            <div class="md-content">
-              <div class="confirm-tips">
-                <div class="error-wrap">
-                  <span class="error error-show" v-if="errorTip">{{ errorMsg }}</span>
+            <form action="#">
+              <div class="md-content">
+                <div class="confirm-tips">
+                  <div class="error-wrap">
+                    <span class="error error-show" v-if="errorTip">{{ errorMsg }}</span>
+                  </div>
+                  <ul>
+                    <li class="regi_form_input">
+                      <i class="icon IconPeople"></i>
+                      <input type="email" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
+                    </li>
+                    <li class="regi_form_input noMargin">
+                      <i class="icon IconPwd"></i>
+                      <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password">
+                    </li>
+                  </ul>
                 </div>
-                <ul>
-                  <li class="regi_form_input">
-                    <i class="icon IconPeople"></i>
-                    <input type="text" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
-                  </li>
-                  <li class="regi_form_input noMargin">
-                    <i class="icon IconPwd"></i>
-                    <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password">
-                  </li>
-                </ul>
+                <div class="login-wrap">
+                  <input type="submit" class="btn-login" @click="login" value="Log In"></input>
+                </div>
               </div>
-              <div class="login-wrap">
-                <a href="javascript:;" class="btn-login" @click="login">Log In</a>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
 
@@ -68,30 +70,32 @@
               <button class="md-close" @click="registerModalFlag=false">Close</button>
             </div>
             <div class="md-content">
-              <div class="confirm-tips">
-                <div class="error-wrap">
-                  <span class="error error-show" v-if="errorTip">email or Password incorrect</span>
+              <form action="#">
+                <div class="confirm-tips">
+                  <div class="error-wrap">
+                    <span class="error error-show" v-if="errorTip">{{errorMsg}}</span>
+                  </div>
+                  <ul>
+                    <li class="regi_form_input">
+                      <i class="icon IconPeople"></i>
+                      <input type="email" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname" required>
+                    </li>
+                    <li class="regi_form_input noMargin">
+                      <i class="icon IconPwd"></i>
+                      <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" required
+                      >
+                    </li>
+                    <li class="regi_form_input noMargin">
+                      <i class="icon IconPwd"></i>
+                      <input type="text" tabindex="2" name="fullName" v-model="fullname" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Full Name" required
+                      >
+                    </li>
+                  </ul>
                 </div>
-                <ul>
-                  <li class="regi_form_input">
-                    <i class="icon IconPeople"></i>
-                    <input type="text" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
-                  </li>
-                  <li class="regi_form_input noMargin">
-                    <i class="icon IconPwd"></i>
-                    <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" 
-                    >
-                  </li>
-                  <li class="regi_form_input noMargin">
-                    <i class="icon IconPwd"></i>
-                    <input type="text" tabindex="2" name="fullName" v-model="fullname" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Full Name" 
-                    >
-                  </li>
-                </ul>
-              </div>
-              <div class="login-wrap">
-                <a href="javascript:;" class="btn-login" @click="signup">Sign Up</a>
-              </div>
+                <div class="login-wrap">
+                  <input type="submit" class="btn-login" @click="signup" value="Sign Up"></input>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -131,6 +135,9 @@ export default {
   methods: {
     checkLogin() {
       let token = localStorage.getItem("token");
+      if (!token) {
+        return;
+      }
       let config = {
         headers: {'Authorization': "bearer " + token}
       };
@@ -142,7 +149,18 @@ export default {
       });
     },
 
+    signUpFormCheck(){
+      return  this.email && this.password && this.fullname;
+    },
+
+
     signup() {
+      if (!this.signUpFormCheck()){
+        this.errorTip = true;
+        this.errorMsg = "email or Password missing";
+        return;
+      }
+
       let param = {
         email: this.email,
         password: this.password,
@@ -150,10 +168,11 @@ export default {
       };
       axios.post("/users/reg", param).then((response) => {
         let res = response.data;
-        if (res.status != "1"){
-          console.log(res.result);
-          this.nickName = res.result;
-        } 
+        this.registerModalFlag = false;
+        console.log(res);  
+        localStorage.setItem("token", res.token);
+        this.checkLogin();
+      
       }).catch((err) =>{
         this.errorTip = true;
         this.errorMsg = err.message;
@@ -163,7 +182,7 @@ export default {
     login() {
       if (!this.email || !this.password) {
         this.errorTip = true;
-        this.errorMsg = "email or Password incorrect";
+        this.errorMsg = "email or Password missing";
         return;
       }
 
@@ -193,6 +212,7 @@ export default {
     logOut() {
       localStorage.removeItem('token');
       this.nickName = '';
+      this.fullname = '';
       this.username = '';
       this.password = '';
     },
