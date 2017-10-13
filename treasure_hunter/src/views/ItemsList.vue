@@ -74,6 +74,13 @@
     line-height: 100px;
     text-align: center;
   }
+  .list-wrap ul::after{
+    clear: both;
+    content: '';
+    height = 0;
+    display :block;
+    visibility: hidden;
+  }
 </style>
 
 
