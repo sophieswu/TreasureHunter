@@ -55,7 +55,7 @@
                 </ul>
               </div>
               <div class="login-wrap">
-                <input type="submit" @click="login" class="btn-login" value="Log In"></input>
+                <input type="submit" @click="login" @keyup.enter="login" class="btn-login" value="Log In"></input>
               </div>
             </div>
           </div>
@@ -83,12 +83,12 @@
                   </li>
                   <li class="regi_form_input noMargin">
                     <i class="icon IconPwd"></i>
-                    <input type="text" tabindex="2" name="fullName" v-model="fullname" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Full Name" required>
+                    <input type="text" tabindex="2" name="fullName" v-model="fullname" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Full Name" >
                   </li>
                 </ul>
               </div>
               <div class="login-wrap">
-                <input type="submit" class="btn-login" @click="signup" value="Sign Up"></input>
+                <input type="submit" class="btn-login" @keyup.enter="signup" @click="signup" value="Sign Up"></input>
               </div>
             </div>
           </div>
@@ -164,11 +164,18 @@ export default {
     },
 
     signup() {
-      if (!(this.email && this.password && this.fullname)) {
+      if (!(this.email && this.password && this.fullname) ) {
         this.errorTip = true;
-        this.errorMsg = "sign up form missing";
+        this.errorMsg = "sign up form missing or incorrect";
         return;
       }
+
+      if ( !(/^[^@\s]+@rochester.edu$/i.test(this.email) || /^[^@\s]+@ur.rochester.edu$/i.test(this.email))){
+        this.errorTip = true;
+        this.errorMsg = "online UR email allow!";
+        return;
+      }
+
 
       let param = {
         email: this.email,
