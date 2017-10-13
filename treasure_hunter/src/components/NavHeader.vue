@@ -172,7 +172,7 @@ export default {
 
       if ( !(/^[^@\s]+@rochester.edu$/i.test(this.email) || /^[^@\s]+@ur.rochester.edu$/i.test(this.email))){
         this.errorTip = true;
-        this.errorMsg = "online UR email allow!";
+        this.errorMsg = "Only UR email allow!";
         return;
       }
 
@@ -197,7 +197,7 @@ export default {
     login() {
       if (!this.email || !this.password) {
         this.errorTip = true;
-        this.errorMsg = "email or Password missing";
+        this.errorMsg = "Email or Password missing";
         return;
       }
       let param = {
