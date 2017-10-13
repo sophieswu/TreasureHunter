@@ -36,66 +36,60 @@
           <div class="md-modal-inner">
             <div class="md-top">
               <div class="md-title">Login in</div>
-              <button class="md-close" @click="loginModalFlag=false">Close</button>
+              <button class="md-close" @click="loginModalFlag=closeForm()">Close</button>
             </div>
-            <form action="#">
-              <div class="md-content">
-                <div class="confirm-tips">
-                  <div class="error-wrap">
-                    <span class="error error-show" v-if="errorTip">{{ errorMsg }}</span>
-                  </div>
-                  <ul>
-                    <li class="regi_form_input">
-                      <i class="icon IconPeople"></i>
-                      <input type="email" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
-                    </li>
-                    <li class="regi_form_input noMargin">
-                      <i class="icon IconPwd"></i>
-                      <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password">
-                    </li>
-                  </ul>
+            <div class="md-content">
+              <div class="confirm-tips">
+                <div class="error-wrap">
+                  <span class="error error-show" v-if="errorTip">{{ errorMsg }}</span>
                 </div>
-                <div class="login-wrap">
-                  <input type="submit" class="btn-login" @click="login" value="Log In"></input>
-                </div>
+                <ul>
+                  <li class="regi_form_input">
+                    <i class="icon IconPeople"></i>
+                    <input type="email" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
+                  </li>
+                  <li class="regi_form_input noMargin">
+                    <i class="icon IconPwd"></i>
+                    <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password">
+                  </li>
+                </ul>
               </div>
-            </form>
+              <div class="login-wrap">
+                <input type="submit" @click="login" class="btn-login" value="Log In"></input>
+              </div>
+            </div>
           </div>
         </div>
 
-         <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':registerModalFlag}">
+        <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':registerModalFlag}">
           <div class="md-modal-inner">
             <div class="md-top">
               <div class="md-title">Register</div>
-              <button class="md-close" @click="registerModalFlag=false">Close</button>
+              <button class="md-close" @click="registerModalFlag=closeForm()">Close</button>
             </div>
             <div class="md-content">
-              <form action="#">
-                <div class="confirm-tips">
-                  <div class="error-wrap">
-                    <span class="error error-show" v-if="errorTip">{{errorMsg}}</span>
-                  </div>
-                  <ul>
-                    <li class="regi_form_input">
-                      <i class="icon IconPeople"></i>
-                      <input type="email" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname" required>
-                    </li>
-                    <li class="regi_form_input noMargin">
-                      <i class="icon IconPwd"></i>
-                      <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" required
-                      >
-                    </li>
-                    <li class="regi_form_input noMargin">
-                      <i class="icon IconPwd"></i>
-                      <input type="text" tabindex="2" name="fullName" v-model="fullname" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Full Name" required
-                      >
-                    </li>
-                  </ul>
+              <div class="confirm-tips">
+                <div class="error-wrap">
+                  <span class="error error-show" v-if="errorTip">{{errorMsg}}</span>
                 </div>
-                <div class="login-wrap">
-                  <input type="submit" class="btn-login" @click="signup" value="Sign Up"></input>
-                </div>
-              </form>
+                <ul>
+                  <li class="regi_form_input">
+                    <i class="icon IconPeople"></i>
+                    <input type="email" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname" required>
+                  </li>
+                  <li class="regi_form_input noMargin">
+                    <i class="icon IconPwd"></i>
+                    <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" required>
+                  </li>
+                  <li class="regi_form_input noMargin">
+                    <i class="icon IconPwd"></i>
+                    <input type="text" tabindex="2" name="fullName" v-model="fullname" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Full Name" required>
+                  </li>
+                </ul>
+              </div>
+              <div class="login-wrap">
+                <input type="submit" class="btn-login" @click="signup" value="Sign Up"></input>
+              </div>
             </div>
           </div>
         </div>
@@ -121,15 +115,22 @@ export default {
     return {
       email: '',
       password: '',
+      fullname: '',
+
+      registerFormValid: false,
+      loginFormValid: false,
+
       errorTip: false,
       errorMsg: "",
+
       loginModalFlag: false,
       registerModalFlag: false,
-      fullname:'',
-      nickName: ''
+
+      nickName: '',
+
     }
   },
-  mounted(){
+  mounted() {
     this.checkLogin();
   },
   methods: {
@@ -139,7 +140,7 @@ export default {
         return;
       }
       let config = {
-        headers: {'Authorization': "bearer " + token}
+        headers: { 'Authorization': "bearer " + token }
       };
       axios.get("/users/isLoggedIn", config).then((response) => {
         let res = response.data;
@@ -149,15 +150,23 @@ export default {
       });
     },
 
-    signUpFormCheck(){
-      return  this.email && this.password && this.fullname;
+    clearOutFom() {
+      this.fullname = '';
+      this.email = '';
+      this.password = '';
+      this.errorMsg = '';
+      this.errorTip = false;
     },
 
+    closeForm(){
+      this.clearOutFom();
+      return false;
+    },
 
     signup() {
-      if (!this.signUpFormCheck()){
+      if (!(this.email && this.password && this.fullname)) {
         this.errorTip = true;
-        this.errorMsg = "email or Password missing";
+        this.errorMsg = "sign up form missing";
         return;
       }
 
@@ -169,11 +178,10 @@ export default {
       axios.post("/users/reg", param).then((response) => {
         let res = response.data;
         this.registerModalFlag = false;
-        console.log(res);  
+        console.log(res);
         localStorage.setItem("token", res.token);
         this.checkLogin();
-      
-      }).catch((err) =>{
+      }).catch((err) => {
         this.errorTip = true;
         this.errorMsg = err.message;
       });
@@ -185,36 +193,29 @@ export default {
         this.errorMsg = "email or Password missing";
         return;
       }
-
       let param = {
         email: this.email,
         password: this.password
       };
-
       axios.post("/users/login", param).then((response) => {
         let res = response.data;
-    
-        console.log(response);
         if (response.status == 200) {
           this.errorTip = false;
           this.loginModalFlag = false;
-          console.log(res.user);
-          console.log(res.token);
           this.nickName = res.user.fullname;
           localStorage.setItem("token", res.token);
+          this.clearOutFom();
         }
-      }).catch((err) =>{
+      }).catch((err) => {
         this.errorTip = true;
         this.errorMsg = err.message;
       });
     },
-  
+
     logOut() {
       localStorage.removeItem('token');
+      this.clearOutFom();
       this.nickName = '';
-      this.fullname = '';
-      this.username = '';
-      this.password = '';
     },
   },
   components: {
