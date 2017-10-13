@@ -170,7 +170,9 @@ export default {
         return;
       }
 
-      if ( !(/^[^@\s]+@rochester.edu$/i.test(this.email) || /^[^@\s]+@ur.rochester.edu$/i.test(this.email))){
+      if ( !(/^[^@\s]+@rochester.edu$/i.test(this.email) || 
+      /^[^@\s]+@ur.rochester.edu$/i.test(this.email) || 
+      /^[^@\s]+@u.rochester.edu$/i.test(this.email))){
         this.errorTip = true;
         this.errorMsg = "Only UR email allow!";
         return;
