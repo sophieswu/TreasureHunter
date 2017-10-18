@@ -31,6 +31,7 @@ app.use(function (req, res, next){
     || req.originalUrl == "/users/reg"
     || req.originalUrl == "/users/isLoggedIn"
     || req.path == "/items"
+    || req.path == "/items/addCart"
   ) {
     next();
   } else {
