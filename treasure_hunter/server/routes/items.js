@@ -22,13 +22,36 @@ mongoose.connection.on("discounted", function(){
 });
 
 router.get("/", function(req, res, next){
-  
+  console.log(1);
   let page = parseInt(req.query.page);
   let pageSize = parseInt(req.query.pageSize);
   let sort = req.query.sort;
   let skip = (page - 1) * pageSize;
 
+  var priceLevel = req.query.priceLevel;
+  var priceGt = '',priceLte = '';
+
   let params = {};
+
+  if(priceLevel!='all'){
+    if(priceLevel != 'all'){
+        console.log(priceLevel)
+    }
+    switch (priceLevel){
+        case '0':priceGt = 0;priceLte = 200;break;
+        case '1':priceGt = 200;priceLte = 400;break;
+        case '2':priceGt = 400;priceLte = 1000;break;
+        case '3':priceGt = 1000;priceLte = 2000;break;
+        case '4':priceGt = 2000;priceLte = 5000;break;
+    }
+    params = {
+        productPrice:{
+            $gt:priceGt,
+            $lte:priceLte
+        }
+    }
+  }
+
   let itemsModel = Items.find(params).skip(skip).limit(pageSize);
   itemsModel.sort({"productPrice":sort});
 
@@ -37,7 +60,7 @@ router.get("/", function(req, res, next){
       res.json({
         status: 1,
         msg: error.message,
-      })
+      });
     } else {
       res.json({
         status: 0,
@@ -50,5 +73,84 @@ router.get("/", function(req, res, next){
     }
   });
 })
+
+router.post('/addCart',function(req,res,next){
+    console.log("xxx");
+    var userId = '1';
+    var productId = req.body.productId;
+    console.log(productId);
+    console.log(userId,req.body,productId,req.body);
+    var User = require('../models/user');
+
+    User.findOne({userId:userId},function(err,userDoc){
+        if(err){
+            console.log("f");
+            res.json({
+                status:"1",
+                msg:err.message
+            })
+        }else{
+
+            console.log(("userDoc"+userDoc));
+
+            if(userDoc) {
+
+                let goodsItem = '';
+                userDoc.cartList.forEach(function (item) {
+                    if (item.productId == productId) {
+                        goodsItem = item;
+                        item.productNum++;
+                    }
+                });
+                //if there are same product in cartlist
+                if (goodsItem) {
+                    userDoc.save(function (err3, doc3) {
+                        if (err3) {
+                            res.json({
+                                status: "1",
+                                msg: err3.message
+                            })
+                        } else {
+                            res.json({
+                                status: '0',
+                                result: 'suc'
+                            })
+                        }
+                    })
+                } else {// if not. find that product
+                    Items.findOne({productId: productId}, function (err1, doc) {
+                        if (err1) {
+                            res.json({
+                                status: "1",
+                                msg: err1.message
+                            })
+                        } else {
+                            if (doc) {
+                                console.log('xixix', doc)
+                                doc.productNum = 1;
+                                doc.checked = 1;
+                                userDoc.cartList.push(doc);
+                                userDoc.save(function (err2, doc) {
+                                    if (err2) {
+                                        res.json({
+                                            status: "1",
+                                            msg: err2.message
+                                        })
+                                    } else {
+                                        res.json({
+                                            status: '0',
+                                            result: 'suc'
+                                        })
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    })
+});
+
 
 module.exports = router;

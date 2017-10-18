@@ -2,8 +2,8 @@
   <div>
     <nav-header></nav-header>
     <nav-bread>
-      <a hfre="\">Buy it Now</a>
-      <a hfre="\">Auctions</a>
+      <a href="\">Buy it Now</a>
+      <a href="\">Auctions</a>
     </nav-bread>
     <div class="accessory-result-page accessory-page">
       <div class="container">
@@ -20,17 +20,18 @@
           <a href="javascript:void(0)" class="filterby stopPop" @click="showFilterPop">Filter by</a>
         </div>
         <div class="accessory-result">
+
           <!-- filter -->
           <div class="filter stopPop" id="filter" :class="{'filterby-show':filterBy}">
             <dl class="filter-price">
               <dt>Price:</dt>
               <dd>
-                <a href="javascript:void(0)" :class="{'cur':priceSelected=='all'}">
+                <a href="javascript:void(0)" :class="{'cur':priceSelected=='all'}" @click="priceSelected='all'">
                   All
                 </a>
               </dd>
               <dd v-for="(price, index) in priceFilter" :key="index">
-                <a href="javascript:void(0)" :class="{'cur':priceSelected==index}" @click="setPriceFilter(index)">
+                <a href="javascript:void(0)" v-bind:class="{'cur':priceSelected==index}" @click="setPriceFilter(index)">
                   ${{ price.startPrice}} - ${{price.endPrice}}
                 </a>
               </dd>
@@ -50,7 +51,7 @@
                     <div class="name">{{item.productName}}</div>
                     <div class="price">${{item.productPrice}}</div>
                     <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m">Add to Cart</a>
+                      <a href="javascript:;" class="btn btn--m" @click="addCart(item.productId)">Add to Cart</a>
                     </div>
                   </div>
                 </li>
@@ -74,6 +75,13 @@
     line-height: 100px;
     text-align: center;
   }
+  .list-wrap ul::after{
+    clear: both;
+    content: '';
+    height : 0;
+    display :block;
+    visibility: hidden;
+  }
 </style>
 
 
@@ -92,7 +100,7 @@ export default {
       itemsList: [],
       sortFlag: true,
       page: 1,
-      pageSize: 8,
+      pageSize: 1,
       busy: true,
 
 
@@ -108,6 +116,14 @@ export default {
         {
           startPrice: '400.00',
           endPrice: '1000.00'
+        },
+        {
+            startPrice: '1000.00',
+            endPrice: '2000.00'
+        },
+        {
+            startPrice: '2000.00',
+            endPrice: '5000.00'
         }
       ],
       priceSelected: 'all',
@@ -134,19 +150,21 @@ export default {
         page: this.page,
         pageSize: this.pageSize,
         sort: this.sortFlag ? 1 : -1,
+        priceLevel:this.priceSelected
       }
       axios.get("/items", {
         params: params
       }).then((response) => {
         let res = response.data;
-        if (res.status == "0"){
+        if (res.status == 0){
           if (flag){
+            this.itemsList =  this.itemsList.concat(res.result.list);
             if (res.result.count === 0){
               this.busy = true;
             } else {
               this.busy = false;
             }
-            this.itemsList =  this.itemsList.concat(res.result.list);
+
           } else {
             this.itemsList =  res.result.list;
             this.busy = false;
@@ -158,13 +176,25 @@ export default {
     },
 
     loadMore(){
+
       this.busy = true;
       setTimeout(() => {
         this.page++;
         this.getItemsList(true);
-      }, 500);
+      }, 300);
     },
+    addCart(productId){
 
+        axios.post("/items/addCart",{
+            productId:productId
+        }).then((res)=>{
+            if(res.status==200){
+                alert("join suc");
+            }else{
+                alert("fuckmsg:"+res.msg)
+            }
+        });
+    },
 
     showFilterPop() {
       this.filterBy = true;
@@ -176,7 +206,8 @@ export default {
     },
     setPriceFilter(index) {
       this.priceSelected = index;
-      this.closePop();
+      this.page =1;
+      this.getItemsList();
     }
   }
 }
