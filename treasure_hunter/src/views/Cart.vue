@@ -1,12 +1,10 @@
 <template>
     <div>
-        <nav-header v-on:senddata="getData"></nav-header>
+        <nav-header v-on:senddata="getData" v-on:fresh="fresh"></nav-header>
         <nav-bread>
             <a href="\">Home</a>
             <a href="\">Cart</a>
         </nav-bread>
-
-
 
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1"
              xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -89,9 +87,9 @@
                                     <div class="item-quantity">
                                         <div class="select-self select-self-open">
                                             <div class="select-self-area">
-                                                <a class="input-sub">-</a>
+                                                <a class="input-sub"@click="alterOne(item.productId,0)">-</a>
                                                 <span class="select-ipt">{{item.productNum}}</span>
-                                                <a class="input-add">+</a>
+                                                <a class="input-add" @click="alterOne(item.productId,1)">+</a>
                                             </div>
                                         </div>
                                     </div>
@@ -201,16 +199,22 @@
                 if(data) {
                     this.nickName = data.a;
                 }
-                this.getCartList(this.nickName);
+                this.getCartList();
             },
 
-            getCartList(ID){
-                if(!ID){
+            fresh:function(){
+              this.getCartList();
+            },
+
+            getCartList(){
+                this.totalPrice = 0;
+                if(!this.nickName){
+                    this.cartList = [];
                     return;
                 }
 
                 let params = {
-                    fullname:ID
+                    fullname:this.nickName
                 }
                 axios.get("/users/cartList", {
                     params: params
@@ -225,12 +229,24 @@
                     } else {
                         this.cartList = [];
                     };
-
-
-
-
                 });
-            }
+            },
+            alterOne(productId,flag){
+                if(!this.nickName){
+                    alert('not logged in'+this.nickName);
+                    return};
+                axios.post("/items/alterOne",{
+                    fullname:this.nickName,
+                    productId:productId,
+                    flag:flag,
+                }).then((res)=>{
+                    if(res.status==200){
+                        this.getCartList();
+                    }else{
+                        alert("fuckmsg:"+res.msg)
+                    }
+                });
+            },
 
 
         }

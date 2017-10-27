@@ -37,6 +37,7 @@ app.use(function (req, res, next){
     || req.path == "/users/cartList"
     || req.path == "/items/list"
     || req.path == "/items/addCart"
+    || req.path == "/items/alterOne"
   ) {
     next();
   } else {

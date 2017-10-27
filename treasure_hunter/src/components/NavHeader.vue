@@ -20,7 +20,7 @@
             <span v-if="nickName">Hi, {{ nickName }}</span>
             <a href="javascript:void(0)" class="navbar-link" v-if="!nickName" @click="loginModalFlag=true">Login</a>
             <a href="javascript:void(0)" class="navbar-link" v-if="!nickName" @click="registerModalFlag=true">Register</a>
-            <a href="javascript:void(0)" class="navbar-link" v-else @click="logOut">Logout</a>
+            <a href="javascript:void(0)" class="navbar-link" v-else @click="logOut" >Logout</a>
             <div class="navbar-cart-container">
               <span class="navbar-cart-count"></span>
               <a class="navbar-link navbar-cart-link" href="/cart">
@@ -213,7 +213,6 @@ export default {
       };
       axios.post("/users/login", param).then((response) => {
 
-          alert(response);
         let res = response.data;
         if (response.status == 200) {
           this.errorTip = false;
@@ -222,9 +221,11 @@ export default {
           localStorage.setItem("token", res.token);
           this.clearOutFom();
             var data1 = {
-                a:res,
+                a:this.nickName
             }
             this.$emit("senddata", data1);
+            this.$emit("fresh");
+            alert("log in suc");
         }
       }).catch((err) => {
         this.errorTip = true;
@@ -237,9 +238,11 @@ export default {
       this.clearOutFom();
       this.nickName = '';
         var data1 = {
-            a:this.nickName,
+            a:this.nickName
         }
         this.$emit("senddata", data1);
+        this.$emit("fresh");
+        alert('has logged out!')
     },
   },
   components: {

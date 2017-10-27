@@ -73,7 +73,59 @@ router.get("/list", function(req, res, next){
     }
   });
 })
+router.post('/alterOne',function(req,res,next){
+    console.log(req.body);
+    let fullname = req.body.fullname;
+    let productId = req.body.productId;
+    let flag = req.body.flag;
+    console.log(fullname+'hoh'+productId+' '+flag);
+    var User = require('../models/user');
 
+    User.findOne({fullname:fullname},function(err,userDoc){
+        if(err){
+            console.log("f");
+            res.json({
+                status:"1",
+                msg:err.message
+            })
+        }else{
+            console.log(("userDoc"+userDoc));
+            if(userDoc) {
+                let goodsItem = '';
+                userDoc.cartList.forEach(function (item) {
+                    if (item.productId == productId) {
+                        goodsItem = item;
+                        if(flag==1) {
+                            item.productNum++;
+                        }else{
+                            if(item.productNum==1){
+                                userDoc.cartList.remove(item);
+                            }else {
+                                item.productNum--;
+                            }
+                        }
+                    }
+                });
+                //if there are same product in cartlist
+                if (goodsItem) {
+                    userDoc.save(function (err3, doc3) {
+                        if (err3) {
+                            res.json({
+                                status: "1",
+                                msg: err3.message
+                            })
+                        } else {
+                            res.json({
+                                status: '0',
+                                result: 'suc'
+                            })
+                        }
+                    })
+                }
+            }
+        }
+    })
+}),
 router.post('/addCart',function(req,res,next){
     console.log(req.body);
     let fullname = req.body.fullname;

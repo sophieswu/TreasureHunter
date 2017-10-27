@@ -197,7 +197,7 @@ export default {
             productId:productId
         }).then((res)=>{
             if(res.status==200){
-                alert("join suc");
+                //alert("join suc");
             }else{
                 alert("fuckmsg:"+res.msg)
             }
