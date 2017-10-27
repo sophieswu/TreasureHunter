@@ -26,16 +26,22 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next){
+  if(req){
+    console.log(req.path);
+  }
+
   if (req.originalUrl == "/users/login"
     || req.originalUrl == "/users/logout"
     || req.originalUrl == "/users/reg"
     || req.originalUrl == "/users/isLoggedIn"
-    || req.path == "/items"
+    || req.path == "/users/cartList"
+    || req.path == "/items/list"
     || req.path == "/items/addCart"
   ) {
     next();
   } else {
     auth.isAuthenticated(req, res, next)
+
   }
 });
 

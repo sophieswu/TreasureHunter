@@ -23,7 +23,7 @@
             <a href="javascript:void(0)" class="navbar-link" v-else @click="logOut">Logout</a>
             <div class="navbar-cart-container">
               <span class="navbar-cart-count"></span>
-              <a class="navbar-link navbar-cart-link" href="/#/cart">
+              <a class="navbar-link navbar-cart-link" href="/cart">
                 <svg class="navbar-cart-logo">
                   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
                 </svg>
@@ -113,7 +113,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      email: '',
+      email: '2@ur.rochester.edu',
       password: '',
       fullname: '',
 
@@ -145,9 +145,14 @@ export default {
       axios.get("/users/isLoggedIn", config).then((response) => {
         let res = response.data;
         this.nickName = res;
+          var data1 = {
+              a:res,
+          }
+          this.$emit("senddata", data1);
       }).catch((err) => {
         console.log("not logged in yet");
       });
+
     },
 
     clearOutFom() {
@@ -207,6 +212,8 @@ export default {
         password: this.password
       };
       axios.post("/users/login", param).then((response) => {
+
+          alert(response);
         let res = response.data;
         if (response.status == 200) {
           this.errorTip = false;
@@ -214,6 +221,10 @@ export default {
           this.nickName = res.user.fullname;
           localStorage.setItem("token", res.token);
           this.clearOutFom();
+            var data1 = {
+                a:res,
+            }
+            this.$emit("senddata", data1);
         }
       }).catch((err) => {
         this.errorTip = true;
@@ -225,6 +236,10 @@ export default {
       localStorage.removeItem('token');
       this.clearOutFom();
       this.nickName = '';
+        var data1 = {
+            a:this.nickName,
+        }
+        this.$emit("senddata", data1);
     },
   },
   components: {

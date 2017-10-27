@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav-header></nav-header>
+    <nav-header v-on:senddata="getData"></nav-header>
     <nav-bread>
       <a href="\">Buy it Now</a>
       <a href="\">Auctions</a>
@@ -43,6 +43,7 @@
 
             <div class="accessory-list col-4">
               <ul>
+
                 <li v-for="(item,index) in itemsList" :key="item._id">
                   <div class="pic">
                     <a href="#"><img v-lazy="'/static/'+item.productImg" alt=""></a>
@@ -55,6 +56,7 @@
                     </div>
                   </div>
                 </li>
+
               </ul>
             </div>
 
@@ -102,7 +104,7 @@ export default {
       page: 1,
       pageSize: 1,
       busy: true,
-
+      nickName:'',
 
       priceFilter: [
         {
@@ -140,6 +142,9 @@ export default {
     this.getItemsList();
   },
   methods: {
+    getData:function(data){
+        this.nickName = data.a;
+    },
     sortItems() {
       this.sortFlag = !this.sortFlag;
       this.page = 1;
@@ -152,7 +157,7 @@ export default {
         sort: this.sortFlag ? 1 : -1,
         priceLevel:this.priceSelected
       }
-      axios.get("/items", {
+      axios.get("/items/list", {
         params: params
       }).then((response) => {
         let res = response.data;
@@ -184,8 +189,11 @@ export default {
       }, 300);
     },
     addCart(productId){
-
+        if(!this.nickName){
+            alert('not logged in'+this.nickName);
+            return};
         axios.post("/items/addCart",{
+            fullname:this.nickName,
             productId:productId
         }).then((res)=>{
             if(res.status==200){

@@ -21,7 +21,7 @@ mongoose.connection.on("discounted", function(){
   console.log("MongDB discounted!");
 });
 
-router.get("/", function(req, res, next){
+router.get("/list", function(req, res, next){
   console.log(1);
   let page = parseInt(req.query.page);
   let pageSize = parseInt(req.query.pageSize);
@@ -75,14 +75,13 @@ router.get("/", function(req, res, next){
 })
 
 router.post('/addCart',function(req,res,next){
-    console.log("xxx");
-    var userId = '1';
+    console.log(req.body);
+    let fullname = req.body.fullname;
     var productId = req.body.productId;
-    console.log(productId);
-    console.log(userId,req.body,productId,req.body);
+    console.log(fullname+'hoh'+productId);
     var User = require('../models/user');
 
-    User.findOne({userId:userId},function(err,userDoc){
+    User.findOne({fullname:fullname},function(err,userDoc){
         if(err){
             console.log("f");
             res.json({
@@ -126,9 +125,9 @@ router.post('/addCart',function(req,res,next){
                             })
                         } else {
                             if (doc) {
-                                console.log('xixix', doc)
                                 doc.productNum = 1;
                                 doc.checked = 1;
+                                console.log('??doc '+doc);
                                 userDoc.cartList.push(doc);
                                 userDoc.save(function (err2, doc) {
                                     if (err2) {
