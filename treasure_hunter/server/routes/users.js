@@ -9,6 +9,7 @@ var authService = require('../services/authService');
 
 
 router.post('/login', jsonParser, function(req, res) {
+    console.log(req.body.email, req.body.password);
   authService.login(req.body.email, req.body.password, function(json) {
       if (json.status !== 200) {
           res.status(json.status).send({message: json.message});
@@ -32,9 +33,38 @@ authService.reg(req.body.email, req.body.password, req.body.fullname,
 router.get('/isLoggedIn', function(req, res) { 
   authService.isAuthenticated(req, res, (req, res) => {
     if(req.user){
+        console.log('check');
       res.status(200).send(req.user.fullname);
     }   
   });
 });
 
+router.get("/cartList",function(req,res){
+      let fullname = req.query.fullname;
+      console.log(fullname+' new');
+      var User = require('../models/user');
+
+      User.findOne({fullname:fullname},function(err,userDoc) {
+          if(err){
+              console.log("f");
+              res.json({
+                  status:"1",
+                  msg:err.message
+              })
+          }else{
+              console.log(("userDoc"+userDoc));
+              if(userDoc) {
+                  res.json({
+                      status:0,
+                      msg: "",
+                      result: {
+                          count: userDoc.length,
+                          list: userDoc.cartList,
+                      }
+                  })
+              }
+          }
+      })
+  ;
+})
 module.exports = router;
