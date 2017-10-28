@@ -150,7 +150,7 @@ export default {
           }
           this.$emit("senddata", data1);
       }).catch((err) => {
-        console.log("not logged in yet");
+        console.log("Not logged in yet");
       });
 
     },
@@ -225,7 +225,6 @@ export default {
             }
             this.$emit("senddata", data1);
             this.$emit("fresh");
-            alert("log in suc");
         }
       }).catch((err) => {
         this.errorTip = true;
@@ -242,7 +241,7 @@ export default {
         }
         this.$emit("senddata", data1);
         this.$emit("fresh");
-        alert('has logged out!')
+        alert('You have successfully logged out!')
     },
   },
   components: {
