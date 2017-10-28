@@ -46,16 +46,16 @@
                 <ul>
                   <li class="regi_form_input">
                     <i class="icon IconPeople"></i>
-                    <input type="email" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
+                    <input type="email" tabindex="1" name="loginname" v-model="email" @keyup.enter="login" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
                   </li>
                   <li class="regi_form_input noMargin">
                     <i class="icon IconPwd"></i>
-                    <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password">
+                    <input type="password" tabindex="2" name="password" v-model="password" @keyup.enter="login" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password">
                   </li>
                 </ul>
               </div>
               <div class="login-wrap">
-                <input type="submit" @click="login" @keyup.enter="login" class="btn-login" value="Log In"></input>
+                <input type="submit" @click="login" class="btn-login" value="Log In"></input>
               </div>
             </div>
           </div>
@@ -75,20 +75,20 @@
                 <ul>
                   <li class="regi_form_input">
                     <i class="icon IconPeople"></i>
-                    <input type="email" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname" required>
+                    <input type="email" tabindex="1" name="loginname" @keyup.enter="signup" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname" required>
                   </li>
                   <li class="regi_form_input noMargin">
                     <i class="icon IconPwd"></i>
-                    <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" required>
+                    <input type="password" tabindex="2" name="password" @keyup.enter="signup" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" required>
                   </li>
                   <li class="regi_form_input noMargin">
                     <i class="icon IconPwd"></i>
-                    <input type="text" tabindex="2" name="fullName" v-model="fullname" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Full Name" >
+                    <input type="text" tabindex="2" name="fullName" @keyup.enter="signup" v-model="fullname" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Full Name" >
                   </li>
                 </ul>
               </div>
               <div class="login-wrap">
-                <input type="submit" class="btn-login" @keyup.enter="signup" @click="signup" value="Sign Up"></input>
+                <input type="submit" class="btn-login" @click="signup" value="Sign Up"></input>
               </div>
             </div>
           </div>
