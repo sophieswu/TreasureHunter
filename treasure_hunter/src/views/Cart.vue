@@ -182,6 +182,7 @@ text-align: center;
     export default{
         data(){
             return{
+            	haha:'',
                 nickName:'',
                 cartList:[],
                 totalPrice:0
