@@ -96,11 +96,11 @@
                                 </div>
 
                                 <div class="cart-tab-4">
-                                    <div class="item-price-total"  >{{item.productPrice*item.productNum}}</div>
+                                    <div class="item-price-total"  >{{Number(10000*item.productPrice*item.productNum/10000).toFixed(2)}}</div>
                                 </div>
                                 <div class="cart-tab-5">
                                     <div class="cart-item-opration">
-                                        <a href="javascript:;" class="item-edit-btn">
+                                        <a href="javascript:;" class="item-edit-btn" @click="alterOne(item.productId,-1)">
                                             <svg class="icon icon-del">
                                                 <use xlink:href="#icon-del">xxx</use>
                                             </svg>
@@ -223,8 +223,12 @@
                     if (res.status == 0){
                         this.cartList = res.result.list;
                         for(var i=0;i<this.cartList.length;i++){
-                            this.totalPrice=this.totalPrice+this.cartList[i].productNum*this.cartList[i].productPrice;
+                            this.cartList[i].productPrice = Number(this.cartList[i].productPrice).toFixed(2);
+                            this.totalPrice=this.totalPrice+10000*this.cartList[i].productNum*this.cartList[i].productPrice/10000;
+
+                            //alert(this.cartList[i].productPrice+' '+this.cartList[i].productNum+' '+this.cartList[i].productPrice*this.cartList[i].productNum*10000/10000);
                         };
+                        this.totalPrice=Number(this.totalPrice).toFixed(2);
 
                     } else {
                         this.cartList = [];
