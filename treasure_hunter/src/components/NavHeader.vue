@@ -113,7 +113,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      email: '2@ur.rochester.edu',
+      email: '@ur.rochester.edu',
       password: '',
       fullname: '',
 
@@ -150,7 +150,7 @@ export default {
           }
           this.$emit("senddata", data1);
       }).catch((err) => {
-        console.log("not logged in yet");
+        console.log("Please try logging in again");
       });
 
     },
@@ -242,7 +242,7 @@ export default {
         }
         this.$emit("senddata", data1);
         this.$emit("fresh");
-        alert('has logged out!')
+        alert('You have logged out.')
     },
   },
   components: {
