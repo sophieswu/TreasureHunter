@@ -197,7 +197,7 @@ export default {
             productId:productId
         }).then((res)=>{
             if(res.status==200){
-                //alert("Sucessfully Joined Treasure Hunter!");
+                //alert("join suc");
             }else{
                 alert("fuckmsg:"+res.msg)
             }
