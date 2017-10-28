@@ -97,12 +97,14 @@ router.post('/alterOne',function(req,res,next){
                         goodsItem = item;
                         if(flag==1) {
                             item.productNum++;
-                        }else{
+                        }else if(flag==0){
                             if(item.productNum==1){
                                 userDoc.cartList.remove(item);
                             }else {
                                 item.productNum--;
                             }
+                        }else if(flag=-1){
+                            userDoc.cartList.remove(item);
                         }
                     }
                 });
