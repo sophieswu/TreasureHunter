@@ -1,9 +1,9 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import ItemsList from '@/views/ItemsList'
-import Cart from '@/views/Cart'
+import Vue from 'vue';
+import Router from 'vue-router';
+import ItemsList from '@/views/ItemsList';
+import Cart from '@/views/Cart';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   mode: 'history',
@@ -11,12 +11,12 @@ export default new Router({
     {
       path: '/',
       name: 'ItemsList',
-      component: ItemsList
+      component: ItemsList,
     },
     {
-        path: '/cart',
-        name: 'Cart',
-        component: Cart
-    }
-  ]
-})
+      path: '/cart',
+      name: 'Cart',
+      component: Cart,
+    },
+  ],
+});

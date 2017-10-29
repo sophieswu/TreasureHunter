@@ -1,9 +1,12 @@
 <template>
   <div>
-    <nav-header v-on:senddata="getData"></nav-header>
+    <nav-header></nav-header>
+    <MessageModal></MessageModal>
     <nav-bread>
       <a href="\">Buy it Now</a>
       <a href="\">Auctions</a>
+      <a href="\Cart">Cart</a>
+     
     </nav-bread>
     <div class="accessory-result-page accessory-page">
       <div class="container">
@@ -94,6 +97,7 @@ import './../assets/css/login.css'
 import NavHeader from '@/components/NavHeader.vue'
 import NavFooter from '@/components/NavFooter.vue'
 import NavBread from '@/components/NavBread.vue'
+import MessageModal from '@/components/Modal.vue'
 import axios from 'axios'
 
 export default {
@@ -104,7 +108,7 @@ export default {
       page: 1,
       pageSize: 1,
       busy: true,
-      nickName:'',
+
 
       priceFilter: [
         {
@@ -136,15 +140,16 @@ export default {
   components: {
     NavHeader,
     NavFooter,
-    NavBread
+    NavBread,
+    MessageModal
   },
   mounted() {
     this.getItemsList();
   },
+  computed: {
+
+  },
   methods: {
-    getData:function(data){
-        this.nickName = data.a;
-    },
     sortItems() {
       this.sortFlag = !this.sortFlag;
       this.page = 1;
@@ -181,25 +186,26 @@ export default {
     },
 
     loadMore(){
-
       this.busy = true;
       setTimeout(() => {
         this.page++;
         this.getItemsList(true);
       }, 300);
     },
+
     addCart(productId){
-        if(!this.nickName){
-            alert('not logged in'+this.nickName);
-            return};
+        if(!this.$store.state.nickName){
+            this.$store.commit("loginModal", true);
+            return;
+        }
         axios.post("/items/addCart",{
-            fullname:this.nickName,
+            fullname:this.$store.state.nickName,
             productId:productId
         }).then((res)=>{
             if(res.status==200){
-                alert("Item added successfully");
+                this.$store.commit("messageModalUpdate",  "Item added successfully!!!");
             }else{
-                alert("fuckmsg:"+res.msg)
+                this.$store.commit("messageModalUpdate",  "msg:" + res.msg);
             }
         });
     },

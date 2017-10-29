@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nav-header v-on:senddata="getData" v-on:fresh="fresh"></nav-header>
+        <nav-header></nav-header>
         <nav-bread>
             <a href="\">Home</a>
             <a href="\">Cart</a>
@@ -62,7 +62,6 @@
                         </div>
                         <ul class="cart-item-list">
                             <li  v-for="(item,index) in cartList" :key="item._id">
-
                                 <div class="cart-tab-1">
                                     <div class="cart-item-check">
                                         <a href="javascipt:;" class="checkbox-btn item-check-btn">
@@ -128,7 +127,7 @@
                         </div>
                         <div class="cart-foot-r">
                             <div class="item-total">
-                                Item total: <span class="total-price">{{this.totalPrice}}</span>
+                                Item total: <span class="total-price">{{totalPrice}}</span>
                             </div>
                             <div class="btn-wrap">
                                 <a class="btn btn--red">Checkout</a>
@@ -180,9 +179,6 @@
     export default{
         data(){
             return{
-                nickName:'',
-                cartList:[],
-                totalPrice:0
             }
         },
         components:{
@@ -191,68 +187,62 @@
             NavBread
         },
         mounted(){
-
-            this.getData();
+        },
+        computed: {
+            nickName() {
+                return this.$store.state.nickName;
+            },
+            totalPrice() {
+                let total = 0;
+                let cart = this.$store.state.cartList
+                for(let i=0;i<cart.length;i++){
+                    total=total+10000*cart[i].productNum*cart[i].productPrice/10000;
+                };
+                return isNaN(total)? "0.00": total.toFixed(2);
+            },
+            cartList() {
+                return this.$store.state.cartList;
+            }
         },
         methods:{
-            getData:function(data){
-                if(data) {
-                    this.nickName = data.a;
-                }
-                this.getCartList();
-            },
-
-            fresh:function(){
-              this.getCartList();
-            },
-
             getCartList(){
-                this.totalPrice = 0;
-                if(!this.nickName){
-                    this.cartList = [];
+                if(!this.$store.state.nickName){
+                    this.$store.commit("cartListUpdate", []);
                     return;
                 }
 
                 let params = {
-                    fullname:this.nickName
+                    fullname:this.$store.state.nickName
                 }
                 axios.get("/users/cartList", {
                     params: params
                 }).then((response) => {
                     let res = response.data;
                     if (res.status == 0){
-                        this.cartList = res.result.list;
-                        for(var i=0;i<this.cartList.length;i++){
-                            this.cartList[i].productPrice = Number(this.cartList[i].productPrice).toFixed(2);
-                            this.totalPrice=this.totalPrice+10000*this.cartList[i].productNum*this.cartList[i].productPrice/10000;
-
-                            //alert(this.cartList[i].productPrice+' '+this.cartList[i].productNum+' '+this.cartList[i].productPrice*this.cartList[i].productNum*10000/10000);
-                        };
-                        this.totalPrice=Number(this.totalPrice).toFixed(2);
-
+                        this.$store.commit("cartListUpdate", res.result.list);
                     } else {
-                        this.cartList = [];
+                        this.$store.commit("cartListUpdate", []);
                     };
                 });
             },
+
             alterOne(productId,flag){
-                if(!this.nickName){
-                    alert('not logged in'+this.nickName);
-                    return};
+                if(!this.$store.state.nickName){
+                    this.$store.commit("loginModal", true);
+                    return
+                };
                 axios.post("/items/alterOne",{
-                    fullname:this.nickName,
+                    fullname:this.$store.state.nickName,
                     productId:productId,
                     flag:flag,
                 }).then((res)=>{
                     if(res.status==200){
                         this.getCartList();
                     }else{
-                        alert("fuckmsg:"+res.msg)
+                        this.$store.commit("messageModalUpdate",  "msg:" + res.msg);
                     }
                 });
             },
-
-
         }
     }
 </script>

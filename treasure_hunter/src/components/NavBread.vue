@@ -4,7 +4,6 @@
       <div class="container">
         <nav class="nav-breadcrumb">
           <slot></slot>
-          
         </nav>
       </div>
     </div>
