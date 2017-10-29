@@ -14,6 +14,9 @@
         "sourceType": "module"
     },
     "rules": {
-        "no-new": "off"
+        "no-new": "off",
+        "no-param-reassign": [2, { "props": false }],
+        "linebreak-style": "off",
+        "import/newline-after-import": "off"
     }
 }

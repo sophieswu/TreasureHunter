@@ -17,9 +17,9 @@
           <div class="navbar-menu-container">
             <!--<a href="/" class="navbar-link">My account</a>-->
             <span class="navbar-link"></span>
-            <span v-if="nickName">Hi, {{ nickName }}</span>
-            <a href="javascript:void(0)" class="navbar-link" v-if="!nickName" @click="loginModalFlag=true">Login</a>
-            <a href="javascript:void(0)" class="navbar-link" v-if="!nickName" @click="registerModalFlag=true">Register</a>
+            <span v-if="greeting" v-text="greeting"></span>
+            <a href="javascript:void(0)" class="navbar-link" v-if="!greeting" @click="loginModalUpdate(true)">Login</a>
+            <a href="javascript:void(0)" class="navbar-link" v-if="!greeting" @click="registerModalFlag=true">Register</a>
             <a href="javascript:void(0)" class="navbar-link" v-else @click="logOut" >Logout</a>
             <div class="navbar-cart-container">
               <span class="navbar-cart-count"></span>
@@ -36,7 +36,7 @@
           <div class="md-modal-inner">
             <div class="md-top">
               <div class="md-title">Login in</div>
-              <button class="md-close" @click="loginModalFlag=closeForm()">Close</button>
+              <button class="md-close" @click="loginModalUpdate(closeForm())">Close</button>
             </div>
             <div class="md-content">
               <div class="confirm-tips">
@@ -46,16 +46,16 @@
                 <ul>
                   <li class="regi_form_input">
                     <i class="icon IconPeople"></i>
-                    <input type="email" tabindex="1" name="loginname" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
+                    <input type="email" tabindex="1" name="loginname" @keyup.enter="login" v-model="email" class="regi_login_input regi_login_input_left" placeholder="Email" data-type="loginname">
                   </li>
                   <li class="regi_form_input noMargin">
                     <i class="icon IconPwd"></i>
-                    <input type="password" tabindex="2" name="password" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password">
+                    <input type="password" tabindex="2" name="password" @keyup.enter="login" v-model="password" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password">
                   </li>
                 </ul>
               </div>
               <div class="login-wrap">
-                <input type="submit" @click="login" @keyup.enter="login" class="btn-login" value="Log In"></input>
+                <input type="submit" @click="login" class="btn-login" value="Log In"></input>
               </div>
             </div>
           </div>
@@ -94,7 +94,7 @@
           </div>
         </div>
 
-        <div class="md-overlay" v-if="loginModalFlag || registerModalFlag" @click="loginModalFlag=false; registerModalFlag=false"></div>
+        <div class="md-overlay" v-if="loginModalFlag || registerModalFlag" @click="loginModalUpdate(false); registerModalFlag=false"></div>
       </div>
     </header>
   </div>
@@ -113,7 +113,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      email: '2@ur.rochester.edu',
+      email: '',
       password: '',
       fullname: '',
 
@@ -123,16 +123,23 @@ export default {
       errorTip: false,
       errorMsg: "",
 
-      loginModalFlag: false,
+
       registerModalFlag: false,
-
-      nickName: '',
-
     }
   },
   mounted() {
     this.checkLogin();
   },
+  
+  computed: {
+    greeting () {
+      return this.$store.getters.greeting;
+    },
+    loginModalFlag () {
+      return this.$store.state.loginModalFlag;
+    }
+  },
+
   methods: {
     checkLogin() {
       let token = localStorage.getItem("token");
@@ -143,16 +150,15 @@ export default {
         headers: { 'Authorization': "bearer " + token }
       };
       axios.get("/users/isLoggedIn", config).then((response) => {
-        let res = response.data;
-        this.nickName = res;
-          var data1 = {
-              a:res,
-          }
-          this.$emit("senddata", data1);
-      }).catch((err) => {
-        console.log("Not logged in yet");
-      });
+        this.$store.commit("updateUserInfo", response.data);
+        }).catch((err) => {
+          console.log("Not logged in yet", err);
+        }
+      );
+    },
 
+    loginModalUpdate(popup) {
+      this.$store.commit("loginModal", popup);
     },
 
     clearOutFom() {
@@ -183,16 +189,15 @@ export default {
         return;
       }
 
-
       let param = {
         email: this.email,
         password: this.password,
         fullname: this.fullname
       };
+
       axios.post("/users/reg", param).then((response) => {
         let res = response.data;
         this.registerModalFlag = false;
-        console.log(res);
         localStorage.setItem("token", res.token);
         this.checkLogin();
       }).catch((err) => {
@@ -216,15 +221,10 @@ export default {
         let res = response.data;
         if (response.status == 200) {
           this.errorTip = false;
-          this.loginModalFlag = false;
-          this.nickName = res.user.fullname;
+          this.loginModalUpdate(false);
+          this.$store.commit("updateUserInfo", res.user);
           localStorage.setItem("token", res.token);
           this.clearOutFom();
-            var data1 = {
-                a:this.nickName
-            }
-            this.$emit("senddata", data1);
-            this.$emit("fresh");
         }
       }).catch((err) => {
         this.errorTip = true;
@@ -234,14 +234,9 @@ export default {
 
     logOut() {
       localStorage.removeItem('token');
-      this.clearOutFom();
-      this.nickName = '';
-        var data1 = {
-            a:this.nickName
-        }
-        this.$emit("senddata", data1);
-        this.$emit("fresh");
-        alert('You have successfully logged out!')
+      this.$store.commit("updateUserInfo", { fullname: "", cartList: []});
+      this.$store.commit("messageModalUpdate",  'You have successfully logged out!');
+
     },
   },
   components: {

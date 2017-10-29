@@ -1,8 +1,10 @@
+/* eslint-disable */
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Items = require('../models/item');
 
+mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://dev_user:rochester@ds113795.mlab.com:13795/treasure_hunter",
 {
   useMongoClient: true,
@@ -73,6 +75,7 @@ router.get("/list", function(req, res, next){
     }
   });
 })
+
 router.post('/alterOne',function(req,res,next){
     console.log(req.body);
     let fullname = req.body.fullname;
@@ -128,6 +131,7 @@ router.post('/alterOne',function(req,res,next){
         }
     })
 }),
+
 router.post('/addCart',function(req,res,next){
     console.log(req.body);
     let fullname = req.body.fullname;
@@ -142,12 +146,10 @@ router.post('/addCart',function(req,res,next){
                 status:"1",
                 msg:err.message
             })
-        }else{
-
+        } else {
             console.log(("userDoc"+userDoc));
-
             if(userDoc) {
-
+                console.log("userDoc");
                 let goodsItem = '';
                 userDoc.cartList.forEach(function (item) {
                     if (item.productId == productId) {
