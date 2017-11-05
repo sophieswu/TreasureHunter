@@ -106,7 +106,7 @@ export default {
       itemsList: [],
       sortFlag: true,
       page: 1,
-      pageSize: 1,
+      pageSize: 8,
       busy: true,
 
 

@@ -2,12 +2,22 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import Vuex from 'vuex';
+
+import io from 'socket.io-client';
 import VueLazyLoad from 'vue-lazyload';
 import infiniteScroll from 'vue-infinite-scroll';
 import App from './App.vue';
 import router from './router';
 
+
 Vue.config.productionTip = false;
+
+
+const socket = io.connect('localhost:3001', { transports: ['websocket'] });
+socket.on('chat message', function (msg) {
+  console.log(msg);
+});
+
 
 Vue.use(Vuex);
 Vue.use(VueLazyLoad, {
