@@ -9,13 +9,23 @@
           <img v-lazy="'/static/'+'6.jpg'" alt="">
         </div>
         <div class="name">{{name}}</div>
-        <div class="line text">Current Bid: <span class="value">${{price}}</span></div>
-        <br/>
-        <div class="price text line" >
-          <span >Time left:</span> 
-          <countdown class="value" :time="24 * 60 * 60 * 1000">
-            <template slot-scope="props">{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }}.</template>
-          </countdown>
+        <div class="line">
+          <span class="text">Current Bid:</span>
+          <span class="value">${{price}}</span>
+        </div>
+        <div class="line">
+          <span class="text">Current Winner:</span>
+          <span class="value">{{winner}}</span>
+        </div>
+ 
+        <div class="line" >
+          <div class="v-center">
+            <span class="text">Time left:</span> 
+          </div>
+          <div>
+            <countdown class="v-center value" :deadline="expire">
+               </countdown> 
+          </div>
         </div>
     
         <div class="description">
@@ -44,15 +54,10 @@
     font-weight: bold;
     overflow: hidden;
   }
-  .text {
-    color: #666;
-  }
-  .price {
-  
-    clear:both;
-    color: #333
- 
 
+  .price {
+
+    color: #333
   }
   .line {
     margin-top: 0.5em;
@@ -60,6 +65,7 @@
     float: left;
     line-height: 8px;
     font-size: 1.25em;
+    clear:both;
   }
   .description{
     overflow: hidden;
@@ -70,27 +76,32 @@
   }
   .value {
     color: #d1434a;
+    float: left;
+    font-size: 1.25em;
   }
-
+  .text {
+    color: #666;
+    float: left;
+    font-size: 1.25em;
+  }
+  .v-center {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+  }
 
 </style>
 
 <script>
-import countdown from '@xkeshi/vue-countdown';
-
+import countdown from 'vuejs-countdown';
+import axios from 'axios';
 
 export default {
   data() {
-    var now = new Date();
-    var newYear = new Date(now.getFullYear() + 1, 0, 1);
     return {
-      time: newYear - now,
+      time:  this.$store.state.expire 
     }
   },
   computed: {
-    message() {
-      // return this.$store.state.message;
-    },
     itemModalFlag() {
       return this.$store.state.itemModalFlag;
     },
@@ -104,18 +115,29 @@ export default {
       return this.$store.state.description;
     },
     expire(){
-      return this.$store.state.name;
+      return this.$store.state.expire;
+    },
+    winner(){
+      return this.$store.state.winner;
     }
-    
-
   },
   methods: {
     submitBid() {
-
+      let bid = 50;
+         axios.post("/items/bid",{
+            fullname: this.$store.state.nickName,
+            productId: this.$store.state.productID,
+            bidPrice: this.$store.state.price + bid,
+            fullname: this.$store.state.nickName,
+        }).then((res)=>{
+            if(res.status==200){
+              this.$store.commit("bid", bid);
+            } else {
+              console.log('fail');
+            }
+        });
     },
-    click() {
 
-    },
     itemModalUpdate() {
       this.$store.commit("itemModalUpdate");
       this.$store.commit("closePop");
@@ -123,6 +145,9 @@ export default {
   },
   components: {
     countdown
-  }
+  },
+
+
+
 }
 </script>

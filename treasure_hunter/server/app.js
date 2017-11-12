@@ -6,8 +6,6 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
-
-
 const index = require('./routes/index');
 const users = require('./routes/users');
 const items = require('./routes/items');
@@ -15,17 +13,22 @@ const items = require('./routes/items');
 const auth = require('./services/authService');
 
 const app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
-io.on('connection', function (socket) {
+io.on('connection', (socket) => {
   console.log('a user connected');
-  socket.emit('chat message', "this is working");
+  socket.emit('chat message', 'this is working');
 });
 
-http.listen(3001, function () {
-  console.log('listening on *:3000');
+http.listen(3001, () => {
+  console.log('listening on *:3001');
+  setInterval(() => {
+    io.emit('customEmit', 'this is sending to you')
+  }, 3000);
 });
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -47,6 +50,7 @@ app.use(function (req, res, next){
     || req.path == "/users/cartList"
     || req.path == "/items/list"
     || req.path == "/items/addCart"
+    || req.path == "/items/bid"
     || req.path == "/items/alterOne"
     || req.path == "/socket.io/"
   ) {
