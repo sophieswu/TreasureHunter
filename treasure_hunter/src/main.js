@@ -6,17 +6,9 @@ import Vuex from 'vuex';
 import io from 'socket.io-client';
 import VueLazyLoad from 'vue-lazyload';
 import infiniteScroll from 'vue-infinite-scroll';
+import VueSocketio from 'vue-socket.io';
 import App from './App.vue';
 import router from './router';
-
-
-Vue.config.productionTip = false;
-
-
-const socket = io.connect('localhost:3001', { transports: ['websocket'] });
-socket.on('chat message', function (msg) {
-  console.log(msg);
-});
 
 
 Vue.use(Vuex);
@@ -34,6 +26,13 @@ const store = new Vuex.Store({
     message: '',
     messageModalFlag: false,
     cartList: [],
+    itemModalFlag: false,
+    overLayFlag: false,
+    // modalItem
+    name: '',
+    price: 0,
+    expire: new Date(),
+    description: '',
   },
   mutations: {
     updateUserInfo(state, user) {
@@ -50,8 +49,28 @@ const store = new Vuex.Store({
       state.message = message;
       state.messageModalFlag = !state.messageModalFlag;
     },
+    itemModalUpdate(state, item) {
+      state.itemModalFlag = !state.itemModalFlag;
+      if (item && item.productName && item.productPrice
+        && item.productDescription && item.auction.expire) {
+        state.name = item.productName;
+        state.price = item.productPrice;
+        state.description = item.productDescription;
+        state.expire = item.auction.expire;
+      }
+    },
     cartListUpdate(state, cartList) {
       state.cartList = cartList;
+    },
+    closePop(state) {
+      state.overLayFlag = false;
+      state.itemModalFlag = false;
+      state.messageModalFlag = false;
+      state.loginModalFlag = false;
+      state.loginModalFlag = false;
+    },
+    showPop(state) {
+      state.overLayFlag = true;
     },
   },
   getters: {
@@ -66,6 +85,9 @@ const store = new Vuex.Store({
     },
   },
 });
+
+
+Vue.use(VueSocketio, 'localhost:3001', store);
 
 new Vue({
   el: '#app',

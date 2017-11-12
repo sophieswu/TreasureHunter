@@ -75,6 +75,7 @@
   font-family: "moderat", sans-serif;
   font-weight: bold;
   overflow: hidden;
+  font-size: 1.25em;
 }
 
 .accessory-list .main .price {

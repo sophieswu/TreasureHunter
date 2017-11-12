@@ -2,6 +2,7 @@
   <div>
     <nav-header></nav-header>
     <MessageModal></MessageModal>
+    <ItemModal></ItemModal>
     <nav-bread>
       <a href="\">Buy it Now</a>
       <a href="\">Auctions</a>
@@ -46,16 +47,16 @@
 
             <div class="accessory-list col-4">
               <ul>
-
                 <li v-for="(item,index) in itemsList" :key="item._id">
                   <div class="pic">
-                    <a href="#"><img v-lazy="'/static/'+item.productImg" alt=""></a>
+                    <a href="#"  class="a-pic"><img v-lazy="'/static/'+item.productImg" alt=""></a>
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
                     <div class="price">${{item.productPrice}}</div>
                     <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m" @click="addCart(item.productId)">Add to Cart</a>
+                      <a href="javascript:;" v-if="item.auction.isAuction" class="btn btn--m" @click="itemModalUpdate(item)">Bid</a>
+                      <a href="javascript:;" v-else class="btn btn--m" @click="addCart(item.productId)">Add to Cart</a>
                     </div>
                   </div>
                 </li>
@@ -87,6 +88,10 @@
     display :block;
     visibility: hidden;
   }
+  .a-pic{
+    cursor: default;
+    text-decoration: none;
+  }
 </style>
 
 
@@ -98,6 +103,7 @@ import NavHeader from '@/components/NavHeader.vue'
 import NavFooter from '@/components/NavFooter.vue'
 import NavBread from '@/components/NavBread.vue'
 import MessageModal from '@/components/Modal.vue'
+import ItemModal from '@/components/ItemDetailModal.vue'
 import axios from 'axios'
 
 export default {
@@ -108,6 +114,7 @@ export default {
       page: 1,
       pageSize: 8,
       busy: true,
+      item: {},
 
 
       priceFilter: [
@@ -134,20 +141,23 @@ export default {
       ],
       priceSelected: 'all',
       filterBy: false,
-      overLayFlag: false,
+      // overLayFlag: false,
     }
   },
   components: {
     NavHeader,
     NavFooter,
     NavBread,
-    MessageModal
+    MessageModal,
+    ItemModal
   },
   mounted() {
     this.getItemsList();
   },
   computed: {
-
+    overLayFlag() {
+      return this.$store.state.overLayFlag;
+    }
   },
   methods: {
     sortItems() {
@@ -212,16 +222,27 @@ export default {
 
     showFilterPop() {
       this.filterBy = true;
-      this.overLayFlag = true;
+      this.$store.commit("showPop");
     },
     closePop() {
       this.filterBy = false;
-      this.overLayFlag = false;
+      this.$store.commit("closePop");
     },
     setPriceFilter(index) {
       this.priceSelected = index;
       this.page =1;
       this.getItemsList();
+    },
+    itemModalUpdate(item) {
+      if(!this.$store.state.nickName){
+        this.$store.commit("loginModal", true);
+        return;
+      }
+      if(!item.auction.isAuction){
+        return;
+      }
+      this.$store.commit("itemModalUpdate", item);
+      this.$store.commit("showPop");
     }
   }
 }
