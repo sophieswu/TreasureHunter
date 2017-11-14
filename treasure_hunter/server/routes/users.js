@@ -9,7 +9,7 @@ var authService = require('../services/authService');
 
 
 router.post('/login', jsonParser, function(req, res) {
-    console.log(req.body.email, req.body.password);
+    // console.log(req.body.email, req.body.password);
   authService.login(req.body.email, req.body.password, function(json) {
       if (json.status !== 200) {
           res.status(json.status).send({message: json.message});
@@ -33,7 +33,7 @@ authService.reg(req.body.email, req.body.password, req.body.fullname,
 router.get('/isLoggedIn', function(req, res) { 
   authService.isAuthenticated(req, res, (req, res) => {
     if(req.user){
-        console.log('check');
+        // console.log('check');
       res.status(200).send(req.user);
     }   
   });

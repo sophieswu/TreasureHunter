@@ -207,5 +207,50 @@ router.post('/addCart',function(req,res,next){
     })
 });
 
+router.post('/bid', function (req, res, next) {
+    console.log(req.body);
+    let fullname = req.body.fullname;
+    var Id = req.body.productId;
+    var newBid = req.body.bidPrice;
+    var Item = require('../models/item');
+
+    Item.findOne({ productId: Id }, function (err, doc) {
+      if (err) {
+        console.log(12323);
+      }
+      doc.productPrice = newBid;
+      doc.auction.winningBidBy = fullname;
+      doc.save(function (err3, doc3) {
+        if (err3) {
+          res.json({
+            status: "1",
+            msg: err3.message
+          })
+        } else {
+          res.json({
+            status: '0',
+            result: 'suc'
+          })
+        }
+      });
+    })
+
+
+    // Item.update({ productId: Id }, { productPrice: newBid}, function (err, raw) {
+    //   console.log(raw);
+    //   if (err) {
+    //     res.json({
+    //       status: "1",
+    //       msg: err.message
+    //     })
+    //   } else {
+    //     res.json({
+    //       status: '0',
+    //       result: 'suc'
+    //     })
+    //   }
+    // }); 
+});
+
 
 module.exports = router;
