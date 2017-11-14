@@ -6,6 +6,7 @@
       <a href="\">Buy it Now</a>
       <a href="\">Auctions</a>
       <a href="\Cart">Cart</a>
+      <a href="\Chat">Chatroom</a> <!-- Chat-->
      
     </nav-bread>
     <div class="accessory-result-page accessory-page">
