@@ -77,8 +77,9 @@ const store = new Vuex.Store({
     showPop(state) {
       state.overLayFlag = true;
     },
-    bid(state, bid) {
-      state.price += bid;
+    bid(state, item) {
+      state.price += item.bid;
+      state.winner = item.winner;
     },
   },
   getters: {

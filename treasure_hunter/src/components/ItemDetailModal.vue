@@ -121,9 +121,17 @@ export default {
       return this.$store.state.winner;
     }
   },
+    sockets: {
+        newBid2(item) {
+            console.log('newbid2',item.winner);
+            this.$store.commit("bid",item);
+
+        }
+    },
   methods: {
     submitBid() {
       let bid = 50;
+
          axios.post("/items/bid",{
             fullname: this.$store.state.nickName,
             productId: this.$store.state.productID,
@@ -131,7 +139,12 @@ export default {
             fullname: this.$store.state.nickName,
         }).then((res)=>{
             if(res.status==200){
-              this.$store.commit("bid", bid);
+                var item = {
+                    bid:bid,
+                    winner:this.$store.state.nickName
+                }
+              this.$store.commit("bid", item);
+                this.$socket.emit('newBid', item);
             } else {
               console.log('fail');
             }
