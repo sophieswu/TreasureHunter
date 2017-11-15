@@ -18,7 +18,12 @@ const io = require('socket.io')(http);
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  socket.emit('chat message', 'this is working');
+    socket.on('newBid', (item) => {
+        console.log('receive newbid',item.winner);
+        socket.broadcast.emit('newBid2', item);
+    });
+
+
 });
 
 http.listen(3001, () => {
