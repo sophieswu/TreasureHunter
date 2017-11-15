@@ -1,0 +1,94 @@
+<template>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Treasure Hunter Chatroom</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+	<div id="chatroom">
+		<div class="col-md-2 userlist">
+	    	<div class="panel-heading">
+	            <span class="glyphicon glyphicon-user"></span>
+	            {{connectedUsers.length}} users are currently online
+	        </div>
+	    </div>
+	    <div class="col-md-10">
+	        <div id="livechat-container">
+	            <div class="panel panel-info">
+	                <div class="panel-heading">
+	                    <h1>Treasure Hunter Chatroom <span class="glyphicon glyphicon-comment"></span></h1>
+	                </div>
+	                <div class="panel-body">
+	                    <ul class="chat" id="messages">
+						<li v-for="user in connectedUsers">
+
+							{{ user }}
+
+						</li>
+	                    </ul>
+	                </div>
+	                <div class="panel-footer">
+	                    <form @submit.prevent="send">
+	                        <input type="text" class="form-control input-lg" placeholder="Talk about the items, review on what is new and useful, or politics?" />
+	                    </form>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	</div>
+
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script>
+		new Vue({
+			el: '#chatroom',
+			data: {
+				connectedUsers:["User 1", "User 2"],
+				messages: [],
+				// message object
+				message: {
+					"type": "",
+					"action": "",
+					"user": "",
+					"text": "",
+					"timestamp": "",
+				},
+
+				areTyping: []
+			},
+			created: function (){
+				// when app instance is running
+
+			},
+			methods: {
+				send: function (){
+
+
+				},
+				userIsTyping: function(username){
+					// which user is typing
+
+				},
+				usersAreTyping: function (){
+					// the number of users typing
+				},
+				stoppedTyping: function (){
+					// determine which user stopped typing
+				}
+			}
+
+
+		})
+</template>
+	</script>
+
+
+	 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+	<script src="client.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+	</body>
+
+	</html>
