@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import ItemsList from '@/views/ItemsList';
 import Cart from '@/views/Cart';
 // Need to import the chat.vue
+import Chat from '@/views/Chat';
 
 Vue.use(Router);
 
@@ -18,6 +19,11 @@ export default new Router({
       path: '/cart',
       name: 'Cart',
       component: Cart,
+    },
+    {
+      path: '/chat',
+      name: 'chat',
+      component: Chat,      
     }
   ],
 });
