@@ -45,7 +45,6 @@
 
           <!-- search result accessories list -->
           <div class="accessory-list-wrap">
-
             <div class="accessory-list col-4">
               <ul>
                 <li v-for="(item,index) in itemsList" :key="item._id">
@@ -55,13 +54,13 @@
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
                     <div class="price">${{item.productPrice}}</div>
+                    <div class="seller">From {{item.soldBy}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" v-if="item.auction.isAuction" class="btn btn--m" @click="itemModalUpdate(item)">Bid</a>
                       <a href="javascript:;" v-else class="btn btn--m" @click="addCart(item.productId)">Add to Cart</a>
                     </div>
                   </div>
                 </li>
-
               </ul>
             </div>
 
@@ -142,7 +141,6 @@ export default {
       ],
       priceSelected: 'all',
       filterBy: false,
-      // overLayFlag: false,
     }
   },
   components: {

@@ -14,6 +14,7 @@ const productSchema = new Schema({
     winningBidBy: { type: String, default: '' },
   },
   productDescription: { type: String, default: '' },
+  soldBy: String,
 });
 
 module.exports = mongoose.model('Item', productSchema);
