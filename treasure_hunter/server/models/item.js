@@ -10,7 +10,7 @@ const productSchema = new Schema({
   productImg: String,
   auction: {
     isAuction: { type: Boolean, default: false },
-    expire: { type: Date, default: Date.now },
+    expire: { type: Number, default: Date.now() },
     winningBidBy: { type: String, default: '' },
   },
   productDescription: { type: String, default: '' },

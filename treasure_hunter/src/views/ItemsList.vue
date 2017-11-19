@@ -92,6 +92,7 @@
     cursor: default;
     text-decoration: none;
   }
+  
 </style>
 
 
@@ -115,6 +116,7 @@ export default {
       pageSize: 8,
       busy: true,
       item: {},
+      timeinterval: undefined,
 
 
       priceFilter: [
@@ -183,7 +185,6 @@ export default {
             } else {
               this.busy = false;
             }
-
           } else {
             this.itemsList =  res.result.list;
             this.busy = false;
@@ -242,7 +243,15 @@ export default {
       }
       this.$store.commit("itemModalUpdate", item);
       this.$store.commit("showPop");
-    }
+
+      if (this.$store.state.itemModalFlag) {
+        clearInterval(this.timeinterval); 
+        this.timeinterval = setInterval(() => {
+          this.$store.commit("countDownTime");
+          console.log( this.$store.state.expire);
+        }, 1000);
+      }
+    },
   }
 }
 </script>

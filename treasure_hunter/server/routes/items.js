@@ -217,6 +217,19 @@ router.post('/bid', function (req, res, next) {
     Item.findOne({ productId: Id }, function (err, doc) {
       if (err) {
         console.log(12323);
+        res.json({
+          status: "1",
+          msg: err.message
+        });
+        return;
+      }
+      if (!doc || !doc.auction.isAuction || doc.auction.expire <= Date.now() ) {
+        //does not exit, is not auction item, or expired 
+        res.json({
+          status: "1",
+          msg: 'cannot bid on this item'
+        });
+        return;
       }
       doc.productPrice = newBid;
       doc.auction.winningBidBy = fullname;
@@ -234,22 +247,6 @@ router.post('/bid', function (req, res, next) {
         }
       });
     })
-
-
-    // Item.update({ productId: Id }, { productPrice: newBid}, function (err, raw) {
-    //   console.log(raw);
-    //   if (err) {
-    //     res.json({
-    //       status: "1",
-    //       msg: err.message
-    //     })
-    //   } else {
-    //     res.json({
-    //       status: '0',
-    //       result: 'suc'
-    //     })
-    //   }
-    // }); 
 });
 
 
