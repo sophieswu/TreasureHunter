@@ -18,22 +18,15 @@ const io = require('socket.io')(http);
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-    socket.on('newBid', (item) => {
-        console.log('receive newbid',item.winner);
-        socket.broadcast.emit('newBid2', item);
-    });
-
-
+  socket.on('newBid', (item) => {
+    console.log('receive newbid', item.winner);
+    socket.broadcast.emit('newBid2', item);
+  });
 });
 
 http.listen(3001, () => {
   console.log('listening on *:3001');
-  setInterval(() => {
-    io.emit('customEmit', 'this is sending to you')
-  }, 3000);
 });
-
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

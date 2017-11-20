@@ -31,7 +31,7 @@ const store = new Vuex.Store({
     // modalItem
     name: '',
     price: 0,
-    expire: '2017 12 26',
+    expire: 0,
     description: '',
     productID: '10006',
     winner: '',
@@ -53,14 +53,12 @@ const store = new Vuex.Store({
     },
     itemModalUpdate(state, item) {
       state.itemModalFlag = !state.itemModalFlag;
-      // console.log(state.expire);
-      // console.log(item.auction.expire);
       if (item && item.productName && item.productPrice
         && item.productDescription && item.auction.expire) {
         state.name = item.productName;
         state.price = item.productPrice;
         state.description = item.productDescription;
-        state.expire = item.auction.expire;
+        state.expire = item.auction.expire - Date.now();
         state.winner = item.auction.winningBidBy;
       }
     },
@@ -81,6 +79,9 @@ const store = new Vuex.Store({
       state.price += item.bid;
       state.winner = item.winner;
     },
+    countDownTime(state) {
+      state.expire = state.expire - 1000;
+    },
   },
   getters: {
     greeting(state) {
@@ -95,22 +96,12 @@ const store = new Vuex.Store({
   },
 });
 
-
 Vue.use(VueSocketio, 'localhost:3001', store);
 
 new Vue({
-
   el: '#app',
   store,
   router,
   template: '<App/>',
   components: { App },
-  sockets: {
-    connect() {
-      console.log('socket connected');
-    },
-    customEmit(val) {
-      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
-    },
-  },
 });
