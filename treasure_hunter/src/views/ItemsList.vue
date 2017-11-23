@@ -1,14 +1,14 @@
 <template>
   <div>
-    <nav-header></nav-header>
+    <nav-header v-on:senddata="getData"></nav-header>
     <MessageModal></MessageModal>
     <ItemModal></ItemModal>
     <nav-bread>
       <a href="\">Buy it Now</a>
       <a href="\">Auctions</a>
+      <a href="\sell">Sell</a>
       <a href="\Cart">Cart</a>
-      <a href="\Chat">Chatroom</a>
-     
+      <a href="\Chat">Chatroom</a> <!-- Chat-->
     </nav-bread>
     <div class="accessory-result-page accessory-page">
       <div class="container">
@@ -45,6 +45,7 @@
 
           <!-- search result accessories list -->
           <div class="accessory-list-wrap">
+
             <div class="accessory-list col-4">
               <ul>
                 <li v-for="(item,index) in itemsList" :key="item._id">
@@ -54,13 +55,13 @@
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
                     <div class="price">${{item.productPrice}}</div>
-                    <div class="seller">From {{item.soldBy}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" v-if="item.auction.isAuction" class="btn btn--m" @click="itemModalUpdate(item)">Bid</a>
                       <a href="javascript:;" v-else class="btn btn--m" @click="addCart(item.productId)">Add to Cart</a>
                     </div>
                   </div>
                 </li>
+
               </ul>
             </div>
 
@@ -92,7 +93,6 @@
     cursor: default;
     text-decoration: none;
   }
-  
 </style>
 
 
@@ -105,6 +105,7 @@ import NavFooter from '@/components/NavFooter.vue'
 import NavBread from '@/components/NavBread.vue'
 import MessageModal from '@/components/Modal.vue'
 import ItemModal from '@/components/ItemDetailModal.vue'
+
 import axios from 'axios'
 
 export default {
@@ -116,7 +117,6 @@ export default {
       pageSize: 8,
       busy: true,
       item: {},
-      timeinterval: undefined,
 
 
       priceFilter: [
@@ -143,6 +143,7 @@ export default {
       ],
       priceSelected: 'all',
       filterBy: false,
+      // overLayFlag: false,
     }
   },
   components: {
@@ -153,6 +154,7 @@ export default {
     ItemModal
   },
   mounted() {
+      console.log(this.$store.state.nickName,"xx");
     this.getItemsList();
   },
   computed: {
@@ -161,12 +163,21 @@ export default {
     }
   },
   methods: {
+      getData:function(data){
+          console.log("get!!!!");
+          if(data) {
+              this.nickName1 = data.fullname;
+              console.log("receive",data.fullname);
+          }
+          this.getSellList();
+      },
     sortItems() {
       this.sortFlag = !this.sortFlag;
       this.page = 1;
       this.getItemsList()
     },
     getItemsList(flag) {
+
       let params = {
         page: this.page,
         pageSize: this.pageSize,
@@ -185,6 +196,7 @@ export default {
             } else {
               this.busy = false;
             }
+
           } else {
             this.itemsList =  res.result.list;
             this.busy = false;
@@ -204,6 +216,7 @@ export default {
     },
 
     addCart(productId){
+        console.log(this.$store.state.nickName);
         if(!this.$store.state.nickName){
             this.$store.commit("loginModal", true);
             return;
@@ -243,15 +256,7 @@ export default {
       }
       this.$store.commit("itemModalUpdate", item);
       this.$store.commit("showPop");
-
-      if (this.$store.state.itemModalFlag) {
-        clearInterval(this.timeinterval); 
-        this.timeinterval = setInterval(() => {
-          this.$store.commit("countDownTime");
-          console.log( this.$store.state.expire);
-        }, 1000);
-      }
-    },
+    }
   }
 }
 </script>

@@ -1,11 +1,11 @@
 <template>
     <div>
-        <nav-header></nav-header>
+        <nav-header v-on:logged="getData"></nav-header>
+        <AddSell></AddSell>
         <nav-bread>
-		  <a href="\">Buy it Now</a>
-		  <a href="\">Auctions</a>
-		  <a href="\Cart">Cart</a>
-		  <a href="\Chat">Chatroom</a>
+            <a href="\">Home</a>
+            <a href="\">Cart</a>
+            <a @click="sellModal" v-if=this.nickName1>  -----------  add sell</a>
         </nav-bread>
 
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1"
@@ -49,7 +49,7 @@
         <div class="container">
             <div class="cart">
                 <div class="page-title-normal">
-                    <h2 class="page-title-h2"><span>My Cart</span></h2>
+                    <h2 class="page-title-h2"><span>My Sell</span></h2>
                 </div>
                 <div class="item-list-wrap">
                     <div class="cart-item">
@@ -63,7 +63,7 @@
                             </ul>
                         </div>
                         <ul class="cart-item-list">
-                            <li  v-for="(item,index) in cartList" :key="item._id">
+                            <li  v-for="(item,index) in sellList" :key="item._id">
                                 <div class="cart-tab-1">
                                     <div class="cart-item-check">
                                         <a href="javascipt:;" class="checkbox-btn item-check-btn">
@@ -76,7 +76,7 @@
                                         <a href="#"><img v-lazy="'/static/'+item.productImg" alt=""></a>
                                     </div>
                                     <div class="cart-item-title">
-                                        <div class="item-name">{{item.productName}}</div>
+                                        <div class="item-name">{{item.productName+" "+item.productPrice}}</div>
                                     </div>
                                 </div>
 
@@ -84,24 +84,14 @@
                                     <div class="item-price">{{item.productPrice}}</div>
                                 </div>
 
-                                <div class="cart-tab-3">
-                                    <div class="item-quantity">
-                                        <div class="select-self select-self-open">
-                                            <div class="select-self-area">
-                                                <a class="input-sub"@click="alterOne(item.productId,0)">-</a>
-                                                <span class="select-ipt">{{item.productNum}}</span>
-                                                <a class="input-add" @click="alterOne(item.productId,1)">+</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
 
                                 <div class="cart-tab-4">
-                                    <div class="item-price-total"  >{{Number(10000*item.productPrice*item.productNum/10000).toFixed(2)}}</div>
+                                    <div class="item-price-total"  >{{Number(10000*item.productPrice/10000).toFixed(2)}}</div>
                                 </div>
                                 <div class="cart-tab-5">
                                     <div class="cart-item-opration">
-                                        <a href="javascript:;" class="item-edit-btn" @click="alterOne(item.productId,-1)">
+                                        <a href="javascript:;" class="item-edit-btn" @click="deleteSell(item.productName)">
                                             <svg class="icon icon-del">
                                                 <use xlink:href="#icon-del">xxx</use>
                                             </svg>
@@ -176,19 +166,23 @@
     import NavHeader from '@/components/NavHeader.vue'
     import NavFooter from '@/components/NavFooter.vue'
     import NavBread from '@/components/NavBread.vue'
+    import AddSell from '@/components/AddSell.vue'
     import axios from 'axios'
 
     export default{
         data(){
             return{
+                nickName1:''
             }
         },
         components:{
             NavHeader,
             NavFooter,
-            NavBread
+            NavBread,
+            AddSell
         },
         mounted(){
+            console.log("sell",this.$store.state.nickName);
         },
         computed: {
             nickName() {
@@ -196,50 +190,63 @@
             },
             totalPrice() {
                 let total = 0;
-                let cart = this.$store.state.cartList
+                let cart = this.$store.state.sellList
                 for(let i=0;i<cart.length;i++){
-                    total=total+10000*cart[i].productNum*cart[i].productPrice/10000;
+                    total=total+10000*cart[i].productPrice/10000;
                 };
                 return isNaN(total)? "0.00": total.toFixed(2);
             },
-            cartList() {
-                return this.$store.state.cartList;
+            sellList() {
+                return this.$store.state.sellList;
             }
         },
         methods:{
-            getCartList(){
-                if(!this.$store.state.nickName){
-                    this.$store.commit("cartListUpdate", []);
+            sellModal(){
+                console.log("sell flag");
+                this.$store.commit("sellModalUpdate",);
+                console.log(this.$store.state.sellModalFlag);
+            },
+            getData:function(data){
+                console.log("get!!!!");
+                if(data) {
+                    this.nickName1 = data.fullname;
+                    console.log("receive",data.fullname);
+                }
+                this.getSellList();
+            },
+            getSellList(){
+                console.log("mounted",this.nickName1);
+                if(!this.nickName1){
+                    console.log("wrong1",this.nickName1)
+                    this.$store.commit("sellListUpdate", []);
                     return;
                 }
-
                 let params = {
-                    fullname:this.$store.state.nickName
+                    fullname:this.nickName1
                 }
-                axios.get("/users/cartList", {
+                axios.get("/users/sellList", {
                     params: params
                 }).then((response) => {
                     let res = response.data;
+                    console.log(res);
                     if (res.status == 0){
-                        this.$store.commit("cartListUpdate", res.result.list);
+                        this.$store.commit("sellListUpdate", res.result.list);
                     } else {
-                        this.$store.commit("cartListUpdate", []);
+                        this.$store.commit("sellListUpdate", []);
                     };
                 });
             },
 
-            alterOne(productId,flag){
+            deleteSell(productName){
                 if(!this.$store.state.nickName){
                     this.$store.commit("loginModal", true);
                     return
                 };
-                axios.post("/items/alterOne",{
-                    fullname:this.$store.state.nickName,
-                    productId:productId,
-                    flag:flag,
+                axios.post("/items/deleteSell",{
+                    productName:productName,
                 }).then((res)=>{
                     if(res.status==200){
-                        this.getCartList();
+                        this.getSellList();
                     }else{
                         this.$store.commit("messageModalUpdate",  "msg:" + res.msg);
                     }

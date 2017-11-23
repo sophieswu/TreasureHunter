@@ -94,6 +94,7 @@
           </div>
         </div>
 
+
         <div class="md-overlay" v-if="loginModalFlag || registerModalFlag" @click="loginModalUpdate(false); registerModalFlag=false"></div>
       </div>
     </header>
@@ -146,11 +147,14 @@ export default {
       if (!token) {
         return;
       }
+      console.log("token",token)
       let config = {
         headers: { 'Authorization': "bearer " + token }
       };
       axios.get("/users/isLoggedIn", config).then((response) => {
         this.$store.commit("updateUserInfo", response.data);
+        console.log("emit",response.data.fullname)
+        this.$emit("logged",response.data);
         }).catch((err) => {
           console.log("Not logged in yet", err);
         }
@@ -161,7 +165,7 @@ export default {
       this.$store.commit("loginModal", popup);
     },
 
-    clearOutFom() {
+    clearOutForm() {
       this.fullname = '';
       this.email = '';
       this.password = '';
@@ -170,7 +174,7 @@ export default {
     },
 
     closeForm(){
-      this.clearOutFom();
+      this.clearOutForm();
       return false;
     },
 
@@ -224,7 +228,8 @@ export default {
           this.loginModalUpdate(false);
           this.$store.commit("updateUserInfo", res.user);
           localStorage.setItem("token", res.token);
-          this.clearOutFom();
+          this.checkLogin();
+          this.clearOutForm();
         }
       }).catch((err) => {
         this.errorTip = true;
@@ -236,6 +241,7 @@ export default {
       localStorage.removeItem('token');
       this.$store.commit("updateUserInfo", { fullname: "", cartList: []});
       this.$store.commit("messageModalUpdate",  'You have successfully logged out!');
+      this.$store.commit("sellListUpdate", {sellList:[]});
 
     },
   },
