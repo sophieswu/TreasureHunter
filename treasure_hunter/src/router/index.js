@@ -2,8 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import ItemsList from '@/views/ItemsList';
 import Cart from '@/views/Cart';
-// Need to import the chat.vue
-import Chat from '@/views/Chat';
+import Sell from '@/views/Sell';
 
 Vue.use(Router);
 
@@ -21,9 +20,9 @@ export default new Router({
       component: Cart,
     },
     {
-      path: '/chat',
-      name: 'chat',
-      component: Chat,
-    },
+      path: '/sell' ,
+      name: 'Sell' ,
+      component: Sell,
+    }
   ],
 });

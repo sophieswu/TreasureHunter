@@ -3,7 +3,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import io from 'socket.io-client';
 import VueLazyLoad from 'vue-lazyload';
 import infiniteScroll from 'vue-infinite-scroll';
 import VueSocketio from 'vue-socket.io';
@@ -25,13 +24,15 @@ const store = new Vuex.Store({
     loginModalFlag: false,
     message: '',
     messageModalFlag: false,
+      sellModalFlag: false,
     cartList: [],
+    sellList: [],
+      sellCount: 0,
     itemModalFlag: false,
     overLayFlag: false,
-    // modalItem
     name: '',
     price: 0,
-    expire: 0,
+    expire: '2017 12 26',
     description: '',
     productID: '10006',
     winner: '',
@@ -43,7 +44,10 @@ const store = new Vuex.Store({
     },
     updateCartCount(state, cartCount) {
       state.carCount += cartCount;
-    },
+    },    ////////
+      updateSellCount(state, sellCount) {
+          state.SellCount += sellCount;
+      },
     loginModal(state, popup) {
       state.loginModalFlag = popup;
     },
@@ -51,20 +55,28 @@ const store = new Vuex.Store({
       state.message = message;
       state.messageModalFlag = !state.messageModalFlag;
     },
+      sellModalUpdate(state) {
+          state.sellModalFlag = !state.sellModalFlag;
+      },
     itemModalUpdate(state, item) {
       state.itemModalFlag = !state.itemModalFlag;
+      // console.log(state.expire);
+      // console.log(item.auction.expire);
       if (item && item.productName && item.productPrice
         && item.productDescription && item.auction.expire) {
         state.name = item.productName;
         state.price = item.productPrice;
         state.description = item.productDescription;
-        state.expire = item.auction.expire - Date.now();
+        state.expire = item.auction.expire;
         state.winner = item.auction.winningBidBy;
       }
     },
     cartListUpdate(state, cartList) {
       state.cartList = cartList;
     },
+      sellListUpdate(state, sellList) {
+          state.sellList = sellList;
+      },
     closePop(state) {
       state.overLayFlag = false;
       state.itemModalFlag = false;
@@ -78,9 +90,6 @@ const store = new Vuex.Store({
     bid(state, item) {
       state.price += item.bid;
       state.winner = item.winner;
-    },
-    countDownTime(state) {
-      state.expire = state.expire - 1000;
     },
   },
   getters: {
@@ -96,12 +105,22 @@ const store = new Vuex.Store({
   },
 });
 
+
 Vue.use(VueSocketio, 'localhost:3001', store);
 
 new Vue({
+
   el: '#app',
   store,
   router,
   template: '<App/>',
   components: { App },
+  sockets: {
+    connect() {
+      console.log('socket connected');
+    },
+    customEmit(val) {
+      console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)')
+    },
+  },
 });

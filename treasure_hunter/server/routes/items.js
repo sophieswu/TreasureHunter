@@ -217,19 +217,6 @@ router.post('/bid', function (req, res, next) {
     Item.findOne({ productId: Id }, function (err, doc) {
       if (err) {
         console.log(12323);
-        res.json({
-          status: "1",
-          msg: err.message
-        });
-        return;
-      }
-      if (!doc || !doc.auction.isAuction || doc.auction.expire <= Date.now() ) {
-        //does not exit, is not auction item, or expired 
-        res.json({
-          status: "1",
-          msg: 'cannot bid on this item'
-        });
-        return;
       }
       doc.productPrice = newBid;
       doc.auction.winningBidBy = fullname;
@@ -247,7 +234,96 @@ router.post('/bid', function (req, res, next) {
         }
       });
     })
+
 });
+
+
+
+    router.post('/addSell',function(req,res,next){
+    console.log(req.body);
+    let name = req.body.name;
+    var price = req.body.price;
+    var soldBy = req.body.owner;
+    var productDescription = req.body.productDescription;
+    var productId = req.body.productId;
+    var Item = require('../models/item');
+    console.log(productDescription);
+    Item.findOne({productName: name}, function(err, existingItem) {
+        if (existingItem) {
+            callback(
+                {status: 409, message: {email: 'Item is already taken.'}});
+            return;
+        }
+
+        var item = new Item({
+            productPrice: price,
+            productName: name,
+            soldBy: soldBy,
+            productDescription:productDescription,
+            productId:productId
+        });
+        item.save(function(err1,doc) {
+            if(err1){
+                console.log(err1);
+                return;
+            }
+            res.json({
+                status: 200,
+                token: ''
+            })
+        });
+    });
+
+});
+
+router.post('/deleteSell',function(req,res,next){
+    console.log(req.body);
+    let productName = req.body.productName;
+
+    var Item = require('../models/item');
+    console.log(productName);
+    Item.findOne({productName: productName}, function(err, item) {
+        if (!item) {
+            res.json({
+                status: "1",
+                msg: "item not exist"
+            })
+        }else {
+            console.log("continue delete", productName);
+            Item.remove({productName: productName}, function (err, item) {
+                if (err) {
+                    res.json({
+                        status: "0",
+                        msg: "delete fail"
+                    })
+                    return;
+                } else {
+                    res.json({
+                        status: "0",
+                        msg: "delete suc"
+                    })
+                }
+
+            });
+        }
+    });
+});
+
+
+    // Item.update({ productId: Id }, { productPrice: newBid}, function (err, raw) {
+    //   console.log(raw);
+    //   if (err) {
+    //     res.json({
+    //       status: "1",
+    //       msg: err.message
+    //     })
+    //   } else {
+    //     res.json({
+    //       status: '0',
+    //       result: 'suc'
+    //     })
+    //   }
+    // });
 
 
 module.exports = router;

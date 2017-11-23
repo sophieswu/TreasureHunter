@@ -4,6 +4,7 @@
         <nav-bread>
             <a href="\">Home</a>
             <a href="\">Cart</a>
+            <a href="\sell">Sell</a>
         </nav-bread>
 
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1"
@@ -187,6 +188,7 @@
             NavBread
         },
         mounted(){
+            console.log("sss",this.$store.state.nickName);
         },
         computed: {
             nickName() {
@@ -206,6 +208,7 @@
         },
         methods:{
             getCartList(){
+                console.log("nikc:",this.$store.state.nickName)
                 if(!this.$store.state.nickName){
                     this.$store.commit("cartListUpdate", []);
                     return;

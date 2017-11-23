@@ -66,5 +66,35 @@ router.get("/cartList",function(req,res){
           }
       })
   ;
+});
+
+
+router.get("/sellList",function(req,res){
+    let fullname = req.query.fullname;
+    console.log(fullname+' new');
+    var Item = require('../models/item');
+
+    Item.find({soldBy:fullname},function(err,userDoc) {
+        if(err){
+            console.log("f");
+            res.json({
+                status:"1",
+                msg:err.message
+            })
+        }else{
+            console.log(("userDoc"+userDoc));
+            if(userDoc) {
+                res.json({
+                    status:0,
+                    msg: "",
+                    result: {
+                        count: userDoc.length,
+                        list: userDoc,
+                    }
+                })
+            }
+        }
+    })
+    ;
 })
 module.exports = router;

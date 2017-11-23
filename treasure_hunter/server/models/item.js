@@ -6,15 +6,15 @@ const productSchema = new Schema({
   productName: String,
   productPrice: Number,
   productNum: Number,
+  soldBy: String,
   checked: String,
   productImg: String,
   auction: {
     isAuction: { type: Boolean, default: false },
-    expire: { type: Number, default: Date.now() },
+    expire: { type: Date, default: Date.now },
     winningBidBy: { type: String, default: '' },
   },
   productDescription: { type: String, default: '' },
-  soldBy: String,
 });
 
 module.exports = mongoose.model('Item', productSchema);
