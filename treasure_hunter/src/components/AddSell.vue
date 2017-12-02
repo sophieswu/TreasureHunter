@@ -33,7 +33,27 @@
 
                 <li class="regi_form_input noMargin">
                   <i class="icon IconPwd"></i>
-                  <input type="text" tabindex="4" name="id" v-model="id" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Id" >
+                  <input type="radio" id='isAuction' v-model="isAuction" name="contact" value="isAuction">
+                    <label for="isAuction">Auction</label>
+
+                  <input type="radio" id='notAuction' v-model="isAuction" name="contact" value="notAuction">
+                    <label for="notAuction">Sell</label>
+                </li>
+
+
+                <li class="regi_form_input noMargin">
+                  <i class="icon IconPwd"></i>
+                  <input type="radio" id='1Day' v-model="expire" value=1>
+                    <label for="1Day">1 Days</label>
+                  <input type="radio" id='3Day' v-model="expire" value=3>
+                    <label for="3Day">3 Days</label>
+                  <input type="radio" id='7Day' v-model="expire" value=7>
+                    <label for="7Day">7 Days</label>
+                </li>
+
+                <li class="regi_form_input noMargin">
+                  <i class="icon IconPwd"></i>
+                  <input type="file" tabindex="4" name="image" id="image-upload" @change="onFileChange" multiple class="regi_login_input regi_login_input_left login-input-no input_text">
                 </li>
               </ul>
             </div>
@@ -55,64 +75,80 @@
 </style>
 
 <script>
-    import './../assets/css/login.css'
-    import axios from 'axios'
+  import FormData from 'form-data'
+  import './../assets/css/login.css'
+  import axios from 'axios'
 export default {
   data() {
     return {
-        name : '',
-        price: '',
-        errorTip : false,
-        errorMsg : '',
-        description: '',
-        id:''
-
-
+      name : '',
+      price: '',
+      errorTip : false,
+      errorMsg : '',
+      description: '',
+      file: null,
+      isAuction: '',
+      expire: 0,
     }
   },
   computed: {
-
     sellModalFlag() {
       return this.$store.state.sellModalFlag;
     },
-
   },
   methods: {
     messageModalUpdate() {
       this.$store.commit("messageModalUpdate",  "");
     },
-      clearOutForm() {
-          this.name = '',
-          this.price= '',
-              this.errorTip = false,
-              this.errorMsg = '',
-              this.description= '',
-              this.id=''
-      },
-      addSell() {
-          if (!(this.name && this.price ) ) {
-              this.errorTip = true;
-              this.errorMsg = "form missing or incorrect";
-              return;
-          }
+    clearOutForm() {
+      this.name = '';
+      this.price= '';
+      this.errorTip = false;
+      this.errorMsg = '';
+      this.description= '';
+    },
 
-          let param = {
-              name: this.name,
-              price: this.price,
-              owner: this.$store.state.nickName,
-              productDescription: this.description,
-              productId: this.id
-          };
+    addSell() {
+        if (!(this.name && this.price ) ) {
+          this.errorTip = true;
+          this.errorMsg = "form missing or incorrect";
+          return;
+      }
+      console.log("95");
+      let data = new FormData();
+      data.append('file', this.file);
+      data.append('name', this.name);
+      data.append('price', this.price);
+      data.append('seller', this.seller);
+      data.append('isAuction', this.isAuction==='isAuction'? true: false);
+  
+      const expiration =  new Date().setDate(new Date().getDate() + this.expire)
+      data.append('expire', expiration);
+      data.append('productDescription', this.description);
+      
 
-          axios.post("/items/addSell", param).then((response) => {
+    
+      axios.post("/items/addSell", data, {
+        headers: {
+          'accept': 'application/json',
+          'Accept-Language': 'en-US,en;q=0.8',
+          'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+        }
+        }).then((response) => {
               let res = response.data;
               this.$store.commit("sellModalUpdate",);
               this.clearOutForm();
-          }).catch((err) => {
-              this.errorTip = true;
-              this.errorMsg = err.message;
-          });
+        }).catch((err) => {
+            this.errorTip = true;
+            this.errorMsg = err.message;
+        });
       },
+ 
+
+      onFileChange(event) {
+        this.file = event.target.files[0]
+      },
+
       clearOutFom() {
           this.name = '',
           this.price =  0,

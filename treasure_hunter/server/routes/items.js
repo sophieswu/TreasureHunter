@@ -1,8 +1,15 @@
 /* eslint-disable */
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose');
-var Items = require('../models/item');
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const Items = require('../models/item');
+const multer = require('multer');
+const AWS = require('aws-sdk');
+const multerS3 = require('multer-s3');
+
+AWS.config.loadFromPath( '../config/aws.json' );
+const s3 = new AWS.S3();
+
 
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://dev_user:rochester@ds113795.mlab.com:13795/treasure_hunter",
@@ -238,40 +245,82 @@ router.post('/bid', function (req, res, next) {
 });
 
 
+const upload = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: 'treasure-hunter-csc210',
+      acl: 'public-read',
+      metadata: function (req, file, cb) {
+        cb(null, {fieldName: file.fieldname});
+      },
+      key: function (req, file, cb) {
+        cb(null, Date.now().toString())
+      },
 
-    router.post('/addSell',function(req,res,next){
+
+      metadata: function (req, file, cb) {
+        cb(null, {fieldName: file.fieldname});
+      },
+      key: function (req, file, cb) {
+        cb(null,`${Date.now().toString()}-${file.originalname}`)
+      }
+    })
+  })
+
+router.post('/addSell', upload.single('file'), function(req,res,next){
+
+    const name = req.body.name;
+    const price = req.body.price;
+    const soldBy = req.body.seller;
+    const productDescription = req.body.productDescription;
+    const location = req.file.location;
+    const isAuction = req.isAuction;
+    const expire = req.expire;
+
+    const Item = require('../models/item');
     console.log(req.body);
-    let name = req.body.name;
-    var price = req.body.price;
-    var soldBy = req.body.owner;
-    var productDescription = req.body.productDescription;
-    var productId = req.body.productId;
-    var Item = require('../models/item');
-    console.log(productDescription);
+ 
     Item.findOne({productName: name}, function(err, existingItem) {
         if (existingItem) {
             callback(
                 {status: 409, message: {email: 'Item is already taken.'}});
             return;
         }
+        var findNextProductId = Item.find().sort({productId : -1}).limit(1);
+        
+        findNextProductId.exec(function(err, maxResult){
+            if (err) {return err;}
+            const productId = maxResult[0].productId + 1;
+            var item = new Item({
+                productId: productId,
+                productPrice: price,
+                productName: name,
+                soldBy: soldBy,
+                productDescription:productDescription,
+                productId:productId,
+                productImg: location,
+                productNum: 1,
+                checked: '',
+                auction: {
+                  isAuction: isAuction,
+                  expire: expire,
+                },
+            });
+            item.save(function(err1,doc) {
+                if(err1){
+                    console.log(err1);
+                    return;
+                }
+                res.json({
+                    status: 200,
+                    token: ''
+                })
+            });
+        
+        })
+        
 
-        var item = new Item({
-            productPrice: price,
-            productName: name,
-            soldBy: soldBy,
-            productDescription:productDescription,
-            productId:productId
-        });
-        item.save(function(err1,doc) {
-            if(err1){
-                console.log(err1);
-                return;
-            }
-            res.json({
-                status: 200,
-                token: ''
-            })
-        });
+       
     });
 
 });
