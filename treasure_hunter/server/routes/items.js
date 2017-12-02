@@ -280,48 +280,41 @@ router.post('/addSell', upload.single('file'), function(req,res,next){
     const Item = require('../models/item');
     console.log(req.body);
  
-    Item.findOne({productName: name}, function(err, existingItem) {
-        if (existingItem) {
-            callback(
-                {status: 409, message: {email: 'Item is already taken.'}});
-            return;
-        }
-        var findNextProductId = Item.find().sort({productId : -1}).limit(1);
-        
-        findNextProductId.exec(function(err, maxResult){
-            if (err) {return err;}
-            const productId = maxResult[0].productId + 1;
-            var item = new Item({
-                productId: productId,
-                productPrice: price,
-                productName: name,
-                soldBy: soldBy,
-                productDescription:productDescription,
-                productId:productId,
-                productImg: location,
-                productNum: 1,
-                checked: '',
-                auction: {
-                  isAuction: isAuction,
-                  expire: expire,
-                },
-            });
-            item.save(function(err1,doc) {
-                if(err1){
-                    console.log(err1);
-                    return;
-                }
-                res.json({
-                    status: 200,
-                    token: ''
-                })
-            });
-        
-        })
+  
+    var findNextProductId = Item.find().sort({productId : -1}).limit(1);
+    
+    findNextProductId.exec(function(err, maxResult){
+        if (err) {return err;}
+        const productId = maxResult[0].productId + 1;
+        var item = new Item({
+            productId: productId,
+            productPrice: price,
+            productName: name,
+            soldBy: soldBy,
+            productDescription:productDescription,
+            productId:productId,
+            productImg: location,
+            productNum: 1,
+            checked: '',
+            auction: {
+                isAuction: isAuction,
+                expire: expire,
+            },
+        });
+        item.save(function(err1,doc) {
+            if(err1){
+                console.log(err1);
+                return;
+            }
+            res.json({
+                status: 200,
+                token: ''
+            })
+        });
+    
+    })
         
 
-       
-    });
 
 });
 

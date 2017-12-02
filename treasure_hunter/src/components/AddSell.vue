@@ -41,7 +41,7 @@
                 </li>
 
 
-                <li class="regi_form_input noMargin">
+                <li v-if="isAuction==='isAuction'" class="regi_form_input noMargin">
                   <i class="icon IconPwd"></i>
                   <input type="radio" id='1Day' v-model="expire" value=1>
                     <label for="1Day">1 Days</label>
@@ -119,15 +119,13 @@ export default {
       data.append('file', this.file);
       data.append('name', this.name);
       data.append('price', this.price);
-      data.append('seller', this.seller);
+      data.append('seller', this.$store.state.nickName);
       data.append('isAuction', this.isAuction==='isAuction'? true: false);
   
       const expiration =  new Date().setDate(new Date().getDate() + this.expire)
       data.append('expire', expiration);
       data.append('productDescription', this.description);
-      
 
-    
       axios.post("/items/addSell", data, {
         headers: {
           'accept': 'application/json',
@@ -144,7 +142,6 @@ export default {
         });
       },
  
-
       onFileChange(event) {
         this.file = event.target.files[0]
       },
