@@ -306,11 +306,46 @@ router.post('/addSell', upload.single('file'), function(req,res,next){
                 token: ''
             })
         });
-    
     })
+});
+
+router.post('/updateSell', function(req,res,next){
+    const name = req.body.name;
+    const price = parseFloat(req.body.price);    
+    const description = req.body.productDescription;
+    const productId = req.body.productId;
+    console.log(req.body);
+    console.log("---------");
+    const Item = require('../models/item');
+
+    Item.findOne({'productId': productId}, function (err, item) {
+        if (err) return handleError(err);
+        if (!item) {
+            console.log("cant find one");
+            res.json({
+                status: "1",
+                msg: "item not exist"
+            });
+            return;
+        }
+        console.log(item);
+        console.log(price);
+        console.log("---------");
+        if (price) item.set({productPrice: price});
+        if (name) item.productName = name;
+        if (description) item.productDescription = description;
         
-
-
+        item.save(function(err1,doc) {
+            if(err1){
+                console.log(err1);
+                return;
+            }
+            res.json({
+                status: 200,
+                token: ''
+            })
+        });        
+    })
 });
 
 router.post('/deleteSell',function(req,res,next){
@@ -345,22 +380,5 @@ router.post('/deleteSell',function(req,res,next){
         }
     });
 });
-
-
-    // Item.update({ productId: Id }, { productPrice: newBid}, function (err, raw) {
-    //   console.log(raw);
-    //   if (err) {
-    //     res.json({
-    //       status: "1",
-    //       msg: err.message
-    //     })
-    //   } else {
-    //     res.json({
-    //       status: '0',
-    //       result: 'suc'
-    //     })
-    //   }
-    // });
-
 
 module.exports = router;

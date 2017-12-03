@@ -60,6 +60,7 @@ app.use(function (req, res, next){
     || req.path == "/socket.io/"
     || req.path == "/users/sellList"
     || req.path == "/items/addSell"
+    || req.path == "/items/updateSell"
       || req.path == "/items/deleteSell"
   ) {
     next();

@@ -65,18 +65,11 @@
                         <ul class="cart-item-list">
                             <li  v-for="(item,index) in sellList" :key="item._id">
                                 <div class="cart-tab-1">
-                                    <div class="cart-item-check">
-                                        <a href="javascipt:;" class="checkbox-btn item-check-btn">
-                                            <svg class="icon icon-ok">
-                                                <use xlink:href="#icon-ok"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
                                     <div class="cart-item-pic">
                                         <a href="#"><img v-lazy="item.productImg" alt=""></a>
                                     </div>
                                     <div class="cart-item-title">
-                                        <div class="item-name">{{item.productName}}</div>
+                                        <div class="item-name centered">{{item.productName}}</div>
                                     </div>
                                 </div>
                                 <div class="cart-tab-2">
@@ -154,6 +147,9 @@
         min-width: 30px;
         text-align: center;
     }
+    .centered {
+        text-align: center
+    }
 </style>
 <script>
     import './../assets/css/checkout.css'
@@ -202,9 +198,8 @@
                 this.$store.commit("sellModalUpdate");
             },
             updateModal(item){
-                this.selectedProduct = item;
-                console.log(this.selectedProduct);            
-                this.$store.commit("updateModalUpdate");
+                this.selectedProduct = item;        
+                this.$store.commit("updateModalUpdate", item.productId);
             },
             getData:function(data){
                 console.log("get!!!!");
@@ -258,16 +253,6 @@
                     this.$store.commit("loginModal", true);
                     return
                 };
-                axios.post("/items/updateSell",{
-                    productName:productName,
-                    username: this.$store.state.nickName
-                }).then((res)=>{
-                    if(res.status==200){
-                        this.getSellList();
-                    }else{
-                        this.$store.commit("messageModalUpdate",  "msg:" + res.msg);
-                    }
-                });
             },
         }
     }

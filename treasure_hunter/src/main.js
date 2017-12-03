@@ -37,6 +37,7 @@ const store = new Vuex.Store({
     description: '',
     productID: '10006',
     winner: '',
+    updateProductId: 0,
   },
   mutations: {
     updateUserInfo(state, user) {
@@ -59,8 +60,9 @@ const store = new Vuex.Store({
     sellModalUpdate(state) {
         state.sellModalFlag = !state.sellModalFlag;
     },
-    updateModalUpdate(state) {
+    updateModalUpdate(state, productId) {
         state.updateModalFlag = !state.updateModalFlag;
+        state.productId = productId;
     },
     itemModalUpdate(state, item) {
       state.itemModalFlag = !state.itemModalFlag;
