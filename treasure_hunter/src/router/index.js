@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import ItemsList from '@/views/ItemsList';
 import Cart from '@/views/Cart';
 import Sell from '@/views/Sell';
+import Chat from '@/views/Chat';
 
 Vue.use(Router);
 
@@ -23,6 +24,11 @@ export default new Router({
       path: '/sell' ,
       name: 'Sell' ,
       component: Sell,
+    },
+    {
+      path: '/chat' ,
+      name: 'Chat' ,
+      component: Chat,
     }
   ],
 });
