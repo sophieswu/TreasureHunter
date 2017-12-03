@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
-  productId: String,
+  productId: Number,
   productName: String,
   productPrice: Number,
   productNum: Number,
@@ -10,7 +10,7 @@ const productSchema = new Schema({
   checked: String,
   productImg: String,
   auction: {
-    isAuction: { type: Boolean, default: false },
+    isAuction: Boolean,
     expire: { type: Date, default: Date.now },
     winningBidBy: { type: String, default: '' },
   },

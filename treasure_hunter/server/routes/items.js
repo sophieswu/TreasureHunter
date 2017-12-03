@@ -31,7 +31,6 @@ mongoose.connection.on("discounted", function(){
 });
 
 router.get("/list", function(req, res, next){
-  console.log(1);
   let page = parseInt(req.query.page);
   let pageSize = parseInt(req.query.pageSize);
   let sort = req.query.sort;
@@ -268,19 +267,14 @@ const upload = multer({
   })
 
 router.post('/addSell', upload.single('file'), function(req,res,next){
-
     const name = req.body.name;
-    const price = req.body.price;
+    const price = parseFloat(req.body.price);
     const soldBy = req.body.seller;
     const productDescription = req.body.productDescription;
     const location = req.file.location;
-    const isAuction = req.isAuction;
-    const expire = req.expire;
-
+    const isAuction = (req.body.isAuction=='true')? true : false;
+    const expire = parseInt(req.body.expire);
     const Item = require('../models/item');
-    console.log(req.body);
- 
-  
     var findNextProductId = Item.find().sort({productId : -1}).limit(1);
     
     findNextProductId.exec(function(err, maxResult){
@@ -299,8 +293,9 @@ router.post('/addSell', upload.single('file'), function(req,res,next){
             auction: {
                 isAuction: isAuction,
                 expire: expire,
-            },
+            }
         });
+        
         item.save(function(err1,doc) {
             if(err1){
                 console.log(err1);
