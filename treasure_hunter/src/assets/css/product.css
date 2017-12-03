@@ -85,8 +85,18 @@
   font-size: 1.25em;
 }
 
+.accessory-list .main .seller {
+  float: right;
+  line-height: 30px;
+  color: #605F5F;
+  font-size: 0.85em;
+  font-style: italic;
+  font-weight: bold;
+}
+
 .accessory-list .main .quantity {
   float: right;
+  
 }
 
 .accessory-list .main .btn-area {

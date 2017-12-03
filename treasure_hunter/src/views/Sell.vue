@@ -2,10 +2,12 @@
     <div>
         <nav-header v-on:logged="getData"></nav-header>
         <AddSell></AddSell>
+
+        <UpdateSell v-bind:product="selectedProduct"></UpdateSell>
         <nav-bread>
             <a href="\">Home</a>
-            <a href="\">Cart</a>
-            <a @click="sellModal" v-if=this.nickName1>  -----------  add sell</a>
+            <a href="\sell">Sell</a>
+            <a href="\Cart">Cart</a>
         </nav-bread>
 
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1"
@@ -57,39 +59,33 @@
                             <ul>
                                 <li>Items</li>
                                 <li>Price</li>
-                                <li>Quantity</li>
-                                <li>Subtotal</li>
                                 <li>Edit</li>
+                                <li>Delete</li>
                             </ul>
                         </div>
                         <ul class="cart-item-list">
                             <li  v-for="(item,index) in sellList" :key="item._id">
                                 <div class="cart-tab-1">
-                                    <div class="cart-item-check">
-                                        <a href="javascipt:;" class="checkbox-btn item-check-btn">
-                                            <svg class="icon icon-ok">
-                                                <use xlink:href="#icon-ok"></use>
+                                    <div class="cart-item-pic">
+                                        <a href="#"><img v-lazy="item.productImg" alt=""></a>
+                                    </div>
+                                    <div class="cart-item-title">
+                                        <div class="item-name centered">{{item.productName}}</div>
+                                    </div>
+                                </div>
+                                <div class="cart-tab-2">
+                                    <div class="item-price-total"  >{{Number(10000*item.productPrice/10000).toFixed(2)}}</div>
+                                </div>
+                                <div class="cart-tab-4">
+                                    <div class="cart-item-opration">
+                                        <a href="javascript:;" class="item-edit-btn" @click="updateModal(item)">
+                                            <svg class="icon icon-edit">
+                                                <use xlink:href="#icon-edit">xxx</use>
                                             </svg>
                                         </a>
                                     </div>
-                                    <div class="cart-item-pic">
-                                        <a href="#"><img v-lazy="'/static/'+item.productImg" alt=""></a>
-                                    </div>
-                                    <div class="cart-item-title">
-                                        <div class="item-name">{{item.productName+" "+item.productPrice}}</div>
-                                    </div>
                                 </div>
-
-                                <div class="cart-tab-2">
-                                    <div class="item-price">{{item.productPrice}}</div>
-                                </div>
-
-
-
                                 <div class="cart-tab-4">
-                                    <div class="item-price-total"  >{{Number(10000*item.productPrice/10000).toFixed(2)}}</div>
-                                </div>
-                                <div class="cart-tab-5">
                                     <div class="cart-item-opration">
                                         <a href="javascript:;" class="item-edit-btn" @click="deleteSell(item.productName)">
                                             <svg class="icon icon-del">
@@ -98,10 +94,7 @@
                                         </a>
                                     </div>
                                 </div>
-
                             </li>
-
-
                         </ul>
                     </div>
                 </div>
@@ -109,20 +102,15 @@
                     <div class="cart-foot-inner">
                         <div class="cart-foot-l">
                             <div class="item-all-check">
-                                <a href="javascipt:;">
-                  <span class="checkbox-btn item-check-btn">
-                      <svg class="icon icon-ok"><use xlink:href="#icon-ok"/>          </svg>
-                  </span>
-                                    <span>Select all</span>
-                                </a>
+
                             </div>
                         </div>
                         <div class="cart-foot-r">
                             <div class="item-total">
-                                Item total: <span class="total-price">{{totalPrice}}</span>
+                                Potential Sales: <span class="total-price">{{totalPrice}}</span>
                             </div>
                             <div class="btn-wrap">
-                                <a class="btn btn--red">Checkout</a>
+                                <a class="btn btn--red" @click="sellModal">Sell Item</a>
                             </div>
                         </div>
                     </div>
@@ -160,6 +148,9 @@
         min-width: 30px;
         text-align: center;
     }
+    .centered {
+        text-align: center
+    }
 </style>
 <script>
     import './../assets/css/checkout.css'
@@ -167,19 +158,22 @@
     import NavFooter from '@/components/NavFooter.vue'
     import NavBread from '@/components/NavBread.vue'
     import AddSell from '@/components/AddSell.vue'
+    import UpdateSell from '@/components/UpdateSell.vue'
     import axios from 'axios'
 
     export default{
         data(){
             return{
-                nickName1:''
+                nickName1:'',
+                selectedProduct: "234"
             }
         },
         components:{
             NavHeader,
             NavFooter,
             NavBread,
-            AddSell
+            AddSell,
+            UpdateSell
         },
         mounted(){
             console.log("sell",this.$store.state.nickName);
@@ -201,10 +195,12 @@
             }
         },
         methods:{
-            sellModal(){
-                console.log("sell flag");
-                this.$store.commit("sellModalUpdate",);
-                console.log(this.$store.state.sellModalFlag);
+            sellModal(){           
+                this.$store.commit("sellModalUpdate");
+            },
+            updateModal(item){
+                this.selectedProduct = item;        
+                this.$store.commit("updateModalUpdate", item.productId);
             },
             getData:function(data){
                 console.log("get!!!!");
@@ -251,6 +247,13 @@
                         this.$store.commit("messageModalUpdate",  "msg:" + res.msg);
                     }
                 });
+            },
+
+             updateSell(productName){
+                if(!this.$store.state.nickName){
+                    this.$store.commit("loginModal", true);
+                    return
+                };
             },
         }
     }

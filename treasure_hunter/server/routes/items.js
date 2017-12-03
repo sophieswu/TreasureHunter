@@ -1,8 +1,15 @@
 /* eslint-disable */
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose');
-var Items = require('../models/item');
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const Items = require('../models/item');
+const multer = require('multer');
+const AWS = require('aws-sdk');
+const multerS3 = require('multer-s3');
+
+AWS.config.loadFromPath( '../config/aws.json' );
+const s3 = new AWS.S3();
+
 
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://dev_user:rochester@ds113795.mlab.com:13795/treasure_hunter",
@@ -24,7 +31,6 @@ mongoose.connection.on("discounted", function(){
 });
 
 router.get("/list", function(req, res, next){
-  console.log(1);
   let page = parseInt(req.query.page);
   let pageSize = parseInt(req.query.pageSize);
   let sort = req.query.sort;
@@ -238,30 +244,58 @@ router.post('/bid', function (req, res, next) {
 });
 
 
+const upload = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: 'treasure-hunter-csc210',
+      acl: 'public-read',
+      metadata: function (req, file, cb) {
+        cb(null, {fieldName: file.fieldname});
+      },
+      key: function (req, file, cb) {
+        cb(null, Date.now().toString())
+      },
 
-    router.post('/addSell',function(req,res,next){
-    console.log(req.body);
-    let name = req.body.name;
-    var price = req.body.price;
-    var soldBy = req.body.owner;
-    var productDescription = req.body.productDescription;
-    var productId = req.body.productId;
-    var Item = require('../models/item');
-    console.log(productDescription);
-    Item.findOne({productName: name}, function(err, existingItem) {
-        if (existingItem) {
-            callback(
-                {status: 409, message: {email: 'Item is already taken.'}});
-            return;
-        }
 
+      metadata: function (req, file, cb) {
+        cb(null, {fieldName: file.fieldname});
+      },
+      key: function (req, file, cb) {
+        cb(null,`${Date.now().toString()}-${file.originalname}`)
+      }
+    })
+  })
+
+router.post('/addSell', upload.single('file'), function(req,res,next){
+    const name = req.body.name;
+    const price = parseFloat(req.body.price);
+    const soldBy = req.body.seller;
+    const productDescription = req.body.productDescription;
+    const location = req.file.location;
+    const isAuction = (req.body.isAuction=='true')? true : false;
+    const expire = parseInt(req.body.expire);
+    const Item = require('../models/item');
+    var findNextProductId = Item.find().sort({productId : -1}).limit(1);
+    
+    findNextProductId.exec(function(err, maxResult){
+        if (err) {return err;}
+        const productId = maxResult[0].productId + 1;
         var item = new Item({
+            productId: productId,
             productPrice: price,
             productName: name,
             soldBy: soldBy,
             productDescription:productDescription,
-            productId:productId
+            productId:productId,
+            productImg: location,
+            productNum: 1,
+            checked: '',
+            auction: {
+                isAuction: isAuction,
+                expire: expire,
+            }
         });
+        
         item.save(function(err1,doc) {
             if(err1){
                 console.log(err1);
@@ -272,8 +306,46 @@ router.post('/bid', function (req, res, next) {
                 token: ''
             })
         });
-    });
+    })
+});
 
+router.post('/updateSell', function(req,res,next){
+    const name = req.body.name;
+    const price = parseFloat(req.body.price);    
+    const description = req.body.productDescription;
+    const productId = req.body.productId;
+    console.log(req.body);
+    console.log("---------");
+    const Item = require('../models/item');
+
+    Item.findOne({'productId': productId}, function (err, item) {
+        if (err) return handleError(err);
+        if (!item) {
+            console.log("cant find one");
+            res.json({
+                status: "1",
+                msg: "item not exist"
+            });
+            return;
+        }
+        console.log(item);
+        console.log(price);
+        console.log("---------");
+        if (price) item.set({productPrice: price});
+        if (name) item.productName = name;
+        if (description) item.productDescription = description;
+        
+        item.save(function(err1,doc) {
+            if(err1){
+                console.log(err1);
+                return;
+            }
+            res.json({
+                status: 200,
+                token: ''
+            })
+        });        
+    })
 });
 
 router.post('/deleteSell',function(req,res,next){
@@ -308,22 +380,5 @@ router.post('/deleteSell',function(req,res,next){
         }
     });
 });
-
-
-    // Item.update({ productId: Id }, { productPrice: newBid}, function (err, raw) {
-    //   console.log(raw);
-    //   if (err) {
-    //     res.json({
-    //       status: "1",
-    //       msg: err.message
-    //     })
-    //   } else {
-    //     res.json({
-    //       status: '0',
-    //       result: 'suc'
-    //     })
-    //   }
-    // });
-
 
 module.exports = router;

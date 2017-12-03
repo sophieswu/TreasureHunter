@@ -3,10 +3,9 @@
         <nav-header></nav-header>
         <nav-bread>
             <a href="\">Home</a>
-            <a href="\">Cart</a>
             <a href="\sell">Sell</a>
+            <a href="\Cart">Cart</a>
         </nav-bread>
-
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1"
              xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <defs>
@@ -72,7 +71,7 @@
                                         </a>
                                     </div>
                                     <div class="cart-item-pic">
-                                        <a href="#"><img v-lazy="'/static/'+item.productImg" alt=""></a>
+                                        <a href="#"><img v-lazy="item.productImg" alt=""></a>
                                     </div>
                                     <div class="cart-item-title">
                                         <div class="item-name">{{item.productName}}</div>
@@ -131,7 +130,7 @@
                                 Item total: <span class="total-price">{{totalPrice}}</span>
                             </div>
                             <div class="btn-wrap">
-                                <a class="btn btn--red">Checkout</a>
+                                <a class="btn btn--red" @click="checkoutMsg">Checkout</a>
                             </div>
                         </div>
                     </div>
@@ -207,6 +206,9 @@
             }
         },
         methods:{
+            checkoutMsg() {
+                alert("Your order has succesfull sent to seller!");
+            },
             getCartList(){
                 console.log("nikc:",this.$store.state.nickName)
                 if(!this.$store.state.nickName){

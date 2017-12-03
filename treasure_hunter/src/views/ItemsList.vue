@@ -4,11 +4,12 @@
     <MessageModal></MessageModal>
     <ItemModal></ItemModal>
     <nav-bread>
-      <a href="\">Buy it Now</a>
-      <a href="\">Auctions</a>
-      <a href="\sell">Sell</a>
-      <a href="\Cart">Cart</a>
-      <a href="\Chat">Chatroom</a> <!-- Chat-->
+      <!-- <a href="\">Buy it Now</a>
+      <a href="\">Auctions</a> -->
+          <a href="\">Home</a>
+          <a href="\sell">Sell</a>
+          <a href="\Cart">Cart</a>
+      <!-- <a href="\Chat">Chatroom</a> Chat -->
     </nav-bread>
     <div class="accessory-result-page accessory-page">
       <div class="container">
@@ -50,11 +51,12 @@
               <ul>
                 <li v-for="(item,index) in itemsList" :key="item._id">
                   <div class="pic">
-                    <a href="#"  class="a-pic"><img v-lazy="'/static/'+item.productImg" alt=""></a>
+                    <a href="#"  class="a-pic"><img v-lazy="item.productImg" alt=""></a>
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
                     <div class="price">${{item.productPrice}}</div>
+                    <div class="seller">Sold By: {{item.soldBy}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" v-if="item.auction.isAuction" class="btn btn--m" @click="itemModalUpdate(item)">Bid</a>
                       <a href="javascript:;" v-else class="btn btn--m" @click="addCart(item.productId)">Add to Cart</a>
