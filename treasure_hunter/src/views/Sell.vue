@@ -197,10 +197,10 @@
         },
         methods:{
             sellModal(){           
-                this.$store.commit("sellModalUpdate",);
+                this.$store.commit("sellModalUpdate");
             },
             updateModal(){           
-                this.$store.commit("updateModalUpdate",);
+                this.$store.commit("updateModalUpdate");
             },
             getData:function(data){
                 console.log("get!!!!");

@@ -72,7 +72,7 @@
                                         </a>
                                     </div>
                                     <div class="cart-item-pic">
-                                        <a href="#"><img v-lazy="'/static/'+item.productImg" alt=""></a>
+                                        <a href="#"><img v-lazy="item.productImg" alt=""></a>
                                     </div>
                                     <div class="cart-item-title">
                                         <div class="item-name">{{item.productName}}</div>
