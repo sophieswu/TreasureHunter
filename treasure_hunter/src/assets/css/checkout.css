@@ -618,6 +618,13 @@ html {
   fill: #999;
 }
 
+.item-edit-btn .icon-edit {
+  width: 100%;
+  height: 100%;
+  fill: #999;
+}
+
+
 .order-item .cart-item-head li:nth-child(2), .order-item .cart-item-head li:nth-child(3), .order-item .cart-item-head li:nth-child(4) {
   width: 16%;
   padding: 0 10px;
