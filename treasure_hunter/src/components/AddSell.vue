@@ -117,10 +117,14 @@ export default {
       data.append('name', this.name);
       data.append('price', this.price);
       data.append('seller', this.$store.state.nickName);
-      data.append('isAuction', this.isAuction==='isAuction'? true: false);
-  
+      if (this.isAuction == 'isAuction'){
+        data.append('isAuction',  true);
+      } else {
+        data.append('isAuction',  false);
+      }
       const expiration =  new Date().setDate(new Date().getDate() + this.expire)
       data.append('expire', expiration);
+      
       data.append('productDescription', this.description);
 
       axios.post("/items/addSell", data, {

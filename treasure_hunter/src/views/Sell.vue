@@ -2,7 +2,8 @@
     <div>
         <nav-header v-on:logged="getData"></nav-header>
         <AddSell></AddSell>
-        <UpdateSell product="'`123456789`'"></UpdateSell>
+
+        <UpdateSell v-bind:product="selectedProduct"></UpdateSell>
         <nav-bread>
             <a href="\">Home</a>
             <a href="\">Cart</a>
@@ -83,7 +84,7 @@
                                 </div>
                                 <div class="cart-tab-4">
                                     <div class="cart-item-opration">
-                                        <a href="javascript:;" class="item-edit-btn" @click="updateModal(item.productName)">
+                                        <a href="javascript:;" class="item-edit-btn" @click="updateModal(item)">
                                             <svg class="icon icon-edit">
                                                 <use xlink:href="#icon-edit">xxx</use>
                                             </svg>
@@ -166,7 +167,8 @@
     export default{
         data(){
             return{
-                nickName1:''
+                nickName1:'',
+                selectedProduct: "234"
             }
         },
         components:{
@@ -199,7 +201,9 @@
             sellModal(){           
                 this.$store.commit("sellModalUpdate");
             },
-            updateModal(){           
+            updateModal(item){
+                this.selectedProduct = item;
+                console.log(this.selectedProduct);            
                 this.$store.commit("updateModalUpdate");
             },
             getData:function(data){

@@ -3,7 +3,6 @@
     <div class="md-modal-inner">
       <div class="md-top">
         <div class="md-title">Edit Listing</div>
-        {{product}}
         <button class="md-close" @click="registerModalFlag=closeForm()">Close</button>
       </div>
       <div class="md-content">
@@ -15,28 +14,17 @@
           <ul>
             <li class="regi_form_input">
               <i class="icon IconPeople"></i>
-              <input type="text" tabindex="1" name="name" v-model="name" class="regi_login_input regi_login_input_left" placeholder="Product Name" data-type="loginname" required>
+              <input type="text" tabindex="1" name="name" v-model="name" class="regi_login_input regi_login_input_left" v-bind:placeholder="product ? product.productName: ''" data-type="loginname" required>
             </li>
 
             <li class="regi_form_input noMargin">
             <i class="icon IconPwd"></i>
-            <input type="text" tabindex="2" name="price" v-model="price" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Price" >
+            <input type="text" tabindex="2" name="price" v-model="price" class="regi_login_input regi_login_input_left login-input-no input_text" v-bind:placeholder="product ? product.productPrice: ''">
           </li>
 
             <li class="regi_form_input noMargin">
             <i class="icon IconPwd"></i>
-            <input type="text" tabindex="3" name="description" v-model="description" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Description" >
-          </li>
-            <li v-if="isAuction==='isAuction'" class="regi_form_input noMargin radio">
-              <span>Duration</span>
-              <input type="radio" id='1Day' v-model="expire" value=1>
-                <label for="1Day">1 Day</label>
-              <input type="radio" id='3Day' v-model="expire" value=3>
-                <label for="3Day">3 Days</label>
-              <input type="radio" id='7Day' v-model="expire" value=7>
-                <label for="7Day">7 Days</label>
-            </li>
-
+            <input type="text" tabindex="3" name="description" v-model="description" class="regi_login_input regi_login_input_left login-input-no input_text" v-bind:placeholder="product ? product.productDescription: ''">
             <li class="regi_form_input noMargin">
               <i class="icon IconPwd"></i>
               <input type="file" tabindex="4" name="image" id="image-upload" @change="onFileChange" multiple class="regi_login_input regi_login_input_left login-input-no input_text">
@@ -68,6 +56,7 @@ export default {
   props:['product'] ,
   data() {
     return {
+      editproduct: product,
       name : '',
       price: '',
       description: '',
@@ -88,9 +77,9 @@ export default {
       this.$store.commit("messageModalUpdate",  "");
     },
     clearOutForm() {
-      this.name = 'Product Name';
-      this.price= 'Price';
-      this.description = 'Product Description',
+      this.name = '';
+      this.price= '';
+      this.description = '',
       this.file = null,
       this.errorTip = false;
       this.errorMsg = '';
