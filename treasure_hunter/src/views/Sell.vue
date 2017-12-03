@@ -6,7 +6,8 @@
         <UpdateSell v-bind:product="selectedProduct"></UpdateSell>
         <nav-bread>
             <a href="\">Home</a>
-            <a href="\">Cart</a>
+            <a href="\sell">Sell</a>
+            <a href="\Cart">Cart</a>
         </nav-bread>
 
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1"

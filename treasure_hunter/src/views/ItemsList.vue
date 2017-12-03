@@ -4,11 +4,12 @@
     <MessageModal></MessageModal>
     <ItemModal></ItemModal>
     <nav-bread>
-      <a href="\">Buy it Now</a>
-      <a href="\">Auctions</a>
-      <a href="\sell">Sell</a>
-      <a href="\Cart">Cart</a>
-      <a href="\Chat">Chatroom</a> <!-- Chat-->
+      <!-- <a href="\">Buy it Now</a>
+      <a href="\">Auctions</a> -->
+          <a href="\">Home</a>
+          <a href="\sell">Sell</a>
+          <a href="\Cart">Cart</a>
+      <!-- <a href="\Chat">Chatroom</a> Chat -->
     </nav-bread>
     <div class="accessory-result-page accessory-page">
       <div class="container">
