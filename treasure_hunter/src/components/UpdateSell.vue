@@ -1,8 +1,9 @@
 <template>
-  <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':sellModalFlag}">
+  <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':updateModalFlag}">
     <div class="md-modal-inner">
       <div class="md-top">
-        <div class="md-title">Add</div>
+        <div class="md-title">Edit Listing</div>
+        {{product}}
         <button class="md-close" @click="registerModalFlag=closeForm()">Close</button>
       </div>
       <div class="md-content">
@@ -26,15 +27,6 @@
             <i class="icon IconPwd"></i>
             <input type="text" tabindex="3" name="description" v-model="description" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Description" >
           </li>
-
-            <li class="regi_form_input noMargin radio">
-              <input type="radio" id='isAuction' v-model="isAuction" name="contact" value="isAuction">
-                <label for="isAuction">Auction</label>
-
-              <input type="radio" id='notAuction' v-model="isAuction" name="contact" value="notAuction">
-                <label for="notAuction">Sell</label>
-            </li>
-
             <li v-if="isAuction==='isAuction'" class="regi_form_input noMargin radio">
               <span>Duration</span>
               <input type="radio" id='1Day' v-model="expire" value=1>
@@ -52,7 +44,7 @@
           </ul>
         </div>
         <div class="login-wrap">
-          <input type="submit" class="btn-login" @keyup.enter="addSell" @click="addSell" value="Add"></input>
+          <input type="submit" class="btn-login" @keyup.enter="updateSell" @click="updateSell" value="Update"></input>
         </div>
       </div>
     </div>
@@ -73,6 +65,7 @@
   import './../assets/css/login.css'
   import axios from 'axios'
 export default {
+  props:['product'] ,
   data() {
     return {
       name : '',
@@ -86,8 +79,8 @@ export default {
     }
   },
   computed: {
-    sellModalFlag() {
-      return this.$store.state.sellModalFlag;
+    updateModalFlag() {
+      return this.$store.state.updateModalFlag;
     },
   },
   methods: {
@@ -99,31 +92,24 @@ export default {
       this.price= 'Price';
       this.description = 'Product Description',
       this.file = null,
-      this.isAuction = '',
-      this.expire = 0,
       this.errorTip = false;
       this.errorMsg = '';
     },
 
-    addSell() {
+    updateSell() {
         if (!(this.name && this.price ) ) {
           this.errorTip = true;
           this.errorMsg = "form missing or incorrect";
           return;
       }
-      console.log("95");
+
       let data = new FormData();
       data.append('file', this.file);
       data.append('name', this.name);
       data.append('price', this.price);
-      data.append('seller', this.$store.state.nickName);
-      data.append('isAuction', this.isAuction==='isAuction'? true: false);
-  
-      const expiration =  new Date().setDate(new Date().getDate() + this.expire)
-      data.append('expire', expiration);
       data.append('productDescription', this.description);
 
-      axios.post("/items/addSell", data, {
+      axios.post("/items/updateSell", data, {
         headers: {
           'accept': 'application/json',
           'Accept-Language': 'en-US,en;q=0.8',
@@ -145,7 +131,7 @@ export default {
 
       closeForm(){
           this.clearOutForm();
-          this.$store.commit("sellModalUpdate");
+          this.$store.commit("updateModalUpdate");
           return true;
       },
   },

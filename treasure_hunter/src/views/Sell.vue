@@ -2,6 +2,7 @@
     <div>
         <nav-header v-on:logged="getData"></nav-header>
         <AddSell></AddSell>
+        <UpdateSell product="'`123456789`'"></UpdateSell>
         <nav-bread>
             <a href="\">Home</a>
             <a href="\">Cart</a>
@@ -82,7 +83,7 @@
                                 </div>
                                 <div class="cart-tab-4">
                                     <div class="cart-item-opration">
-                                        <a href="javascript:;" class="item-edit-btn" @click="deleteSell(item.productName)">
+                                        <a href="javascript:;" class="item-edit-btn" @click="updateModal(item.productName)">
                                             <svg class="icon icon-edit">
                                                 <use xlink:href="#icon-edit">xxx</use>
                                             </svg>
@@ -159,6 +160,7 @@
     import NavFooter from '@/components/NavFooter.vue'
     import NavBread from '@/components/NavBread.vue'
     import AddSell from '@/components/AddSell.vue'
+    import UpdateSell from '@/components/UpdateSell.vue'
     import axios from 'axios'
 
     export default{
@@ -171,7 +173,8 @@
             NavHeader,
             NavFooter,
             NavBread,
-            AddSell
+            AddSell,
+            UpdateSell
         },
         mounted(){
             console.log("sell",this.$store.state.nickName);
@@ -193,10 +196,11 @@
             }
         },
         methods:{
-            sellModal(){
-                console.log("sell flag");
+            sellModal(){           
                 this.$store.commit("sellModalUpdate",);
-                console.log(this.$store.state.sellModalFlag);
+            },
+            updateModal(){           
+                this.$store.commit("updateModalUpdate",);
             },
             getData:function(data){
                 console.log("get!!!!");

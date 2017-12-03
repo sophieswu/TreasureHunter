@@ -25,6 +25,7 @@ const store = new Vuex.Store({
     message: '',
     messageModalFlag: false,
     sellModalFlag: false,
+    updateModalFlag: false,
     cartList: [],
     sellList: [],
     sellCount: 0,
@@ -45,9 +46,9 @@ const store = new Vuex.Store({
     updateCartCount(state, cartCount) {
       state.carCount += cartCount;
     },    ////////
-      updateSellCount(state, sellCount) {
-          state.SellCount += sellCount;
-      },
+    updateSellCount(state, sellCount) {
+        state.SellCount += sellCount;
+    },
     loginModal(state, popup) {
       state.loginModalFlag = popup;
     },
@@ -55,9 +56,12 @@ const store = new Vuex.Store({
       state.message = message;
       state.messageModalFlag = !state.messageModalFlag;
     },
-      sellModalUpdate(state) {
-          state.sellModalFlag = !state.sellModalFlag;
-      },
+    sellModalUpdate(state) {
+        state.sellModalFlag = !state.sellModalFlag;
+    },
+    updateModalUpdate(state) {
+        state.updateModalFlag = !state.updateModalFlag;
+    },
     itemModalUpdate(state, item) {
       state.itemModalFlag = !state.itemModalFlag;
       // console.log(state.expire);
