@@ -35,7 +35,7 @@ const store = new Vuex.Store({
     price: 0,
     expire: '2017 12 25',
     description: '',
-    productID: '10006',
+    productID: '',
     winner: '',
     updateProductId: 0,
     productImg: '',
@@ -69,8 +69,11 @@ const store = new Vuex.Store({
       state.itemModalFlag = !state.itemModalFlag;
       // console.log(state.expire);
       // console.log(item.auction.expire);
+      console.log(item);
+      
       if (item && item.productName && item.productPrice
         && item.productDescription && item.auction.expire) {
+        state.productID = item.productId;
         state.name = item.productName;
         state.price = item.productPrice;
         state.description = item.productDescription;

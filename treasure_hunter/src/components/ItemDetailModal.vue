@@ -1,33 +1,35 @@
 <template>
   <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':itemModalFlag}">
-    <div class="md-modal-inner">
+    <div class="md-modal-inner" style="padding:1em">
       <div class="md-top" >
        <button class="md-close" @click="itemModalUpdate">Close</button>
       </div>
       <div class="md-content">
-        <div class="pic center">
+        <div class="pic center" style="text-align:center">
           <img v-lazy="productImg" alt="">
         </div>
-        <div class="name">{{name}}</div>
-        <div class="line">
-          <span class="text">Current Bid:</span>
-          <span class="value">${{price}}</span>
-        </div>
-        <div class="line">
-          <span class="text">Current Winner:</span>
-          <span class="value">{{winner}}</span>
-        </div>
- 
-        
 
-        <div class="line">
-          Time Left:     {{day}}:{{hr}}:{{min}}:{{sec}}
-        </div>
+        <table style="width:100%; margin: 2em">
+        <tr>
+          <td class="width"><span class="text">Current Bid:</span></td>
+          <td><span class="value" style="color:#000;font-weight:700;">${{price}}</span></td>
+        </tr>
+        <tr>
+          <td><span class="text" >Winner:</span></td>
+          <td><span class="value" style="color:#000;font-weight:700;">{{winner}}</span></td>
+        </tr>
+        <tr>
+          <td><span class="text">Time Left:</span></td>
+          <td><span class="value" style="font-weight:700;">{{day}}:{{hr}}:{{min}}:{{sec}}</span></td>
+        </tr>
+        <tr>
+          <td><span class="text">Description:</span></td>
+        </tr>
         <div class="description">
-          Description:{{description}}+{{day}}+{{hr}}+{{min}}+{{sec}}
+          <span class="value">{{description}}</span>
         </div>
-      
-        
+      </table>
+
         <div class="login-wrap">
           <input type="submit" @click="submitBid" class="btn-login" value="Bid By $5.00"></input>
         </div>
@@ -50,9 +52,7 @@
     font-weight: bold;
     overflow: hidden;
   }
-
   .price {
-
     color: #333
   }
   .line {
@@ -84,6 +84,11 @@
     padding-top: 0.25em;
     padding-bottom: 0.25em;
   }
+  .width {
+    width: 25%;
+  }
+
+
 
 </style>
 
@@ -152,7 +157,7 @@ export default {
       }, 1000)
     },
     submitBid() {
-      let bid = 50;
+      let bid = 5;
 
          axios.post("/items/bid",{
             fullname: this.$store.state.nickName,
@@ -174,7 +179,7 @@ export default {
     },
 
     itemModalUpdate() {
-      this.$store.commit("itemModalUpdate");
+      this.$store.commit("itemModalUpdate", '');
       this.$store.commit("closePop");
     }
   },

@@ -56,7 +56,6 @@
                     <div class="name">{{item.productName}}</div>
                     <div class="price">${{item.productPrice}}</div>
                     <div class="seller">Sold By: {{item.soldBy}}</div>
-                    <div v-if="item.auction.isAuction" >{{item.auction.expire}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" v-if="item.auction.isAuction" class="btn btn--m" @click="itemModalUpdate(item)">Bid</a>
                       <a href="javascript:;" v-else class="btn btn--m" @click="addCart(item.productId)">Add to Cart</a>
@@ -257,6 +256,7 @@ export default {
       if(!item.auction.isAuction){
         return;
       }
+      console.log(item);
       this.$store.commit("itemModalUpdate", item);
       console.log('expire',item.auction.expire);
       this.$store.commit("expireUpdate", item.auction.expire);

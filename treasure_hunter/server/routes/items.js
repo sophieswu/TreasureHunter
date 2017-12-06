@@ -219,10 +219,23 @@ router.post('/bid', function (req, res, next) {
     var Id = req.body.productId;
     var newBid = req.body.bidPrice;
     var Item = require('../models/item');
+    console.log(Id);
 
     Item.findOne({ productId: Id }, function (err, doc) {
       if (err) {
         console.log(12323);
+        res.json({
+            status: '1',
+            result: 'errro'
+          });
+        return;
+      }
+      if (!doc) {
+        res.json({
+            status: '1',
+            result: 'errro'
+          });
+          return; 
       }
       doc.productPrice = newBid;
       doc.auction.winningBidBy = fullname;
