@@ -33,11 +33,12 @@ const store = new Vuex.Store({
     overLayFlag: false,
     name: '',
     price: 0,
-    expire: '2017 12 26',
+    expire: '2017 12 25',
     description: '',
-    productID: '10006',
+    productID: '',
     winner: '',
     updateProductId: 0,
+    productImg: '',
   },
   mutations: {
     updateUserInfo(state, user) {
@@ -68,17 +69,24 @@ const store = new Vuex.Store({
       state.itemModalFlag = !state.itemModalFlag;
       // console.log(state.expire);
       // console.log(item.auction.expire);
+      console.log(item);
+      
       if (item && item.productName && item.productPrice
         && item.productDescription && item.auction.expire) {
+        state.productID = item.productId;
         state.name = item.productName;
         state.price = item.productPrice;
         state.description = item.productDescription;
         state.expire = item.auction.expire;
         state.winner = item.auction.winningBidBy;
+        state.productImg = item.productImg;
       }
     },
     cartListUpdate(state, cartList) {
       state.cartList = cartList;
+    },
+    expireUpdate(state, expire1) {
+      state.expire = expire1;
     },
       sellListUpdate(state, sellList) {
           state.sellList = sellList;

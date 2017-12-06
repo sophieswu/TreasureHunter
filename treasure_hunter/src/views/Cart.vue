@@ -207,7 +207,20 @@
         },
         methods:{
             checkoutMsg() {
-                alert("Your order has succesfull sent to seller!");
+                var state = this.$store.state;
+                var params = {
+                    buyer: state.nickName,
+                };
+                 axios.get("/items/checkout", {
+                    params: params
+                }).then((response) => {
+                    let res = response.data;
+                    if (res.status == 0){
+                        alert("Your order has succesfull sent to seller!");
+                    } else {
+                        alert("this is an problem!");
+                    };
+                });
             },
             getCartList(){
                 console.log("nikc:",this.$store.state.nickName)

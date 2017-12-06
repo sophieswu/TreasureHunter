@@ -1,37 +1,35 @@
 <template>
   <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':itemModalFlag}">
-    <div class="md-modal-inner">
+    <div class="md-modal-inner" style="padding:1em">
       <div class="md-top" >
        <button class="md-close" @click="itemModalUpdate">Close</button>
       </div>
       <div class="md-content">
-        <div class="pic center">
-          <img v-lazy="'/static/'+'6.jpg'" alt="">
+        <div class="pic center" style="text-align:center">
+          <img v-lazy="productImg" alt="">
         </div>
-        <div class="name">{{name}}</div>
-        <div class="line">
-          <span class="text">Current Bid:</span>
-          <span class="value">${{price}}</span>
-        </div>
-        <div class="line">
-          <span class="text">Current Winner:</span>
-          <span class="value">{{winner}}</span>
-        </div>
- 
-        <div class="line" >
-          <div class="v-center">
-            <span class="text">Time left:</span> 
-          </div>
-          <div>
-            <countdown class="v-center value" :deadline="expire">
-               </countdown> 
-          </div>
-        </div>
-    
+
+        <table style="width:100%; margin: 2em">
+        <tr>
+          <td class="width"><span class="text">Current Bid:</span></td>
+          <td><span class="value" style="color:#000;font-weight:700;">${{price}}</span></td>
+        </tr>
+        <tr>
+          <td><span class="text" >Winner:</span></td>
+          <td><span class="value" style="color:#000;font-weight:700;">{{winner}}</span></td>
+        </tr>
+        <tr>
+          <td><span class="text">Time Left:</span></td>
+          <td><span class="value" style="font-weight:700;">{{day}}:{{hr}}:{{min}}:{{sec}}</span></td>
+        </tr>
+        <tr>
+          <td><span class="text">Description:</span></td>
+        </tr>
         <div class="description">
-          Description:{{description}}
+          <span class="value">{{description}}</span>
         </div>
-        
+      </table>
+
         <div class="login-wrap">
           <input type="submit" @click="submitBid" class="btn-login" value="Bid By $5.00"></input>
         </div>
@@ -54,9 +52,7 @@
     font-weight: bold;
     overflow: hidden;
   }
-
   .price {
-
     color: #333
   }
   .line {
@@ -88,6 +84,11 @@
     padding-top: 0.25em;
     padding-bottom: 0.25em;
   }
+  .width {
+    width: 25%;
+  }
+
+
 
 </style>
 
@@ -98,12 +99,20 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      time:  this.$store.state.expire 
+      time:  '',
+      day: 0, hr: 0, min: 0, sec: 0
+
     }
+  },
+  mounted(){
+    this.countdown()
   },
   computed: {
     itemModalFlag() {
       return this.$store.state.itemModalFlag;
+    },
+    productImg() {
+      return this.$store.state.productImg;
     },
     name(){
       return this.$store.state.name;
@@ -120,6 +129,7 @@ export default {
     winner(){
       return this.$store.state.winner;
     }
+
   },
     sockets: {
         newBid2(item) {
@@ -129,8 +139,25 @@ export default {
         }
     },
   methods: {
+        countdown: function () {
+      const end = Date.parse(new Date(this.$store.state.expire))
+      const now = Date.parse(new Date())
+      const msec = end - now
+      let day = parseInt(msec / 1000 / 60 / 60 / 24)
+      let hr = parseInt(msec / 1000 / 60 / 60 % 24)
+      let min = parseInt(msec / 1000 / 60 % 60)
+      let sec = parseInt(msec / 1000 % 60)
+      this.day = day
+      this.hr = hr > 9 ? hr : '0' + hr
+      this.min = min > 9 ? min : '0' + min
+      this.sec = sec > 9 ? sec : '0' + sec
+      const that = this
+      setTimeout(function () {
+        that.countdown()
+      }, 1000)
+    },
     submitBid() {
-      let bid = 50;
+      let bid = 5;
 
          axios.post("/items/bid",{
             fullname: this.$store.state.nickName,
@@ -152,7 +179,7 @@ export default {
     },
 
     itemModalUpdate() {
-      this.$store.commit("itemModalUpdate");
+      this.$store.commit("itemModalUpdate", '');
       this.$store.commit("closePop");
     }
   },

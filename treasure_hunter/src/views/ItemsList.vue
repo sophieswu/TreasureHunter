@@ -15,7 +15,6 @@
       <div class="container">
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
-          <a href="javascript:void(0)" class="default cur">Default</a>
           <a href="javascript:;" @click="sortItems" class="price">
             Price
             <svg class="icon icon-arrow-short">
@@ -157,6 +156,7 @@ export default {
   },
   mounted() {
       console.log(this.$store.state.nickName,"xx");
+      console.log(this.$store.state.expire,"xx");
     this.getItemsList();
   },
   computed: {
@@ -256,7 +256,15 @@ export default {
       if(!item.auction.isAuction){
         return;
       }
+      console.log(item);
       this.$store.commit("itemModalUpdate", item);
+      console.log('expire',item.auction.expire);
+      this.$store.commit("expireUpdate", item.auction.expire);
+
+      var now = new Date().setDate(new Date().getDate());
+      var end = new Date(this.$store.state.expire);
+      var tl = end - now;
+      console.log('xixixi',end,now,this.$store.state.expire,tl);
       this.$store.commit("showPop");
     }
   }

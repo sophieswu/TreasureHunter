@@ -1,7 +1,7 @@
 <template>
     <div>
         <nav-header v-on:logged="getData"></nav-header>
-        <AddSell></AddSell>
+        <AddSell v-on:logged="getData"></AddSell>
 
         <UpdateSell v-bind:product="selectedProduct"></UpdateSell>
         <nav-bread>
@@ -110,7 +110,7 @@
                                 Potential Sales: <span class="total-price">{{totalPrice}}</span>
                             </div>
                             <div class="btn-wrap">
-                                <a class="btn btn--red" @click="sellModal">Sell Item</a>
+                                <a class="btn btn--red" @click="sellModal">Sell Iem</a>
                             </div>
                         </div>
                     </div>
@@ -204,6 +204,10 @@
             },
             getData:function(data){
                 console.log("get!!!!");
+                if(data=="refresh"){
+                    this.getSellList();
+                    return;
+                }
                 if(data) {
                     this.nickName1 = data.fullname;
                     console.log("receive",data.fullname);
@@ -234,6 +238,7 @@
             },
 
             deleteSell(productName){
+                console.log('delete');
                 if(!this.$store.state.nickName){
                     this.$store.commit("loginModal", true);
                     return

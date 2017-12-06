@@ -10,6 +10,13 @@ const multerS3 = require('multer-s3');
 AWS.config.loadFromPath( '../config/aws.json' );
 const s3 = new AWS.S3();
 
+const accountSid = 'AC08472a07797f8688bd882fd6b0a9d4bd'; 
+const authToken = '9df6b64a3ea56ae9589f3e6576a98170'; 
+ 
+//require the Twilio module and create a REST client 
+const client = require('twilio')(accountSid, authToken); 
+ 
+
 
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://dev_user:rochester@ds113795.mlab.com:13795/treasure_hunter",
@@ -219,10 +226,23 @@ router.post('/bid', function (req, res, next) {
     var Id = req.body.productId;
     var newBid = req.body.bidPrice;
     var Item = require('../models/item');
+    console.log(Id);
 
     Item.findOne({ productId: Id }, function (err, doc) {
       if (err) {
         console.log(12323);
+        res.json({
+            status: '1',
+            result: 'errro'
+          });
+        return;
+      }
+      if (!doc) {
+        res.json({
+            status: '1',
+            result: 'errro'
+          });
+          return; 
       }
       doc.productPrice = newBid;
       doc.auction.winningBidBy = fullname;
@@ -240,8 +260,25 @@ router.post('/bid', function (req, res, next) {
         }
       });
     })
+});
+
+
+router.get('/checkout', function (req, res, next) {
+    console.log(req.body);
+    client.messages.create({ 
+        to: `+16086289774`, 
+        from: "+16084408887", 
+        body: `Good news, user Yunrou Gong has decided to purcahse your product, his/her phone number is 901-211-1211 feel free to contact them for payment and delivery.`, 
+    }, function(err, message) { 
+        console.log(message.sid);
+        res.json({
+            status: 0,
+            result: ''
+            }); 
+    });
 
 });
+
 
 
 const upload = multer({
