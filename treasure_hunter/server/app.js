@@ -56,6 +56,7 @@ app.use(function (req, res, next){
     || req.path == "/items/list"
     || req.path == "/items/addCart"
     || req.path == "/items/bid"
+    || req.path == "/items/checkout"
     || req.path == "/items/alterOne"
     || req.path == "/socket.io/"
     || req.path == "/users/sellList"
