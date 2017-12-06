@@ -33,11 +33,12 @@ const store = new Vuex.Store({
     overLayFlag: false,
     name: '',
     price: 0,
-    expire: '2017 12 26',
+    expire: '2017 12 25',
     description: '',
     productID: '10006',
     winner: '',
     updateProductId: 0,
+    productImg: '',
   },
   mutations: {
     updateUserInfo(state, user) {
@@ -75,10 +76,14 @@ const store = new Vuex.Store({
         state.description = item.productDescription;
         state.expire = item.auction.expire;
         state.winner = item.auction.winningBidBy;
+        state.productImg = item.productImg;
       }
     },
     cartListUpdate(state, cartList) {
       state.cartList = cartList;
+    },
+    expireUpdate(state, expire1) {
+      state.expire = expire1;
     },
       sellListUpdate(state, sellList) {
           state.sellList = sellList;

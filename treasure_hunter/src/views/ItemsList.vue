@@ -15,7 +15,6 @@
       <div class="container">
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
-          <a href="javascript:void(0)" class="default cur">Default</a>
           <a href="javascript:;" @click="sortItems" class="price">
             Price
             <svg class="icon icon-arrow-short">
@@ -57,6 +56,7 @@
                     <div class="name">{{item.productName}}</div>
                     <div class="price">${{item.productPrice}}</div>
                     <div class="seller">Sold By: {{item.soldBy}}</div>
+                    <div v-if="item.auction.isAuction" >{{item.auction.expire}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" v-if="item.auction.isAuction" class="btn btn--m" @click="itemModalUpdate(item)">Bid</a>
                       <a href="javascript:;" v-else class="btn btn--m" @click="addCart(item.productId)">Add to Cart</a>
@@ -157,6 +157,7 @@ export default {
   },
   mounted() {
       console.log(this.$store.state.nickName,"xx");
+      console.log(this.$store.state.expire,"xx");
     this.getItemsList();
   },
   computed: {
@@ -257,6 +258,13 @@ export default {
         return;
       }
       this.$store.commit("itemModalUpdate", item);
+      console.log('expire',item.auction.expire);
+      this.$store.commit("expireUpdate", item.auction.expire);
+
+      var now = new Date().setDate(new Date().getDate());
+      var end = new Date(this.$store.state.expire);
+      var tl = end - now;
+      console.log('xixixi',end,now,this.$store.state.expire,tl);
       this.$store.commit("showPop");
     }
   }
