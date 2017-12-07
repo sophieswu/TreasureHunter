@@ -86,7 +86,7 @@ export default {
       if (!token) {
         return;
       }
-
+      console.log("yunrou test");
       axios.post("/items/updateSell", {
            'name': this.name,
            'price': this.price,
@@ -100,6 +100,9 @@ export default {
               let res = response.data;
               this.$store.commit("updateModalUpdate", 0);
               this.clearOutForm();
+              console.log("emit sadie bad")
+              this.$emit("logged","refresh");
+              console.log("emit sadie refresh")
         }).catch((err) => {
             this.errorTip = true;
             this.errorMsg = err.message;

@@ -87,7 +87,7 @@
                   </li>
                   <li class="regi_form_input noMargin">
                     <i class="icon IconPwd"></i>
-                    <input type="text" tabindex="3" name="telephone" v-model="telephone" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Telephone Number">
+                    <input type="text" tabindex="3" name="telephone" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Telephone Number">
                   </li>
                 </ul>
               </div>
