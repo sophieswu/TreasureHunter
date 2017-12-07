@@ -266,7 +266,7 @@ router.post('/bid', function (req, res, next) {
 router.get('/checkout', function (req, res, next) {
     console.log(req.body);
     client.messages.create({ 
-        to: `+16086289774`, 
+        to: `+16086091278`, 
         from: "+16084408887", 
         body: `Good news, user Yunrou Gong has decided to purcahse your product, his/her phone number is 901-211-1211 feel free to contact them for payment and delivery.`, 
     }, function(err, message) { 

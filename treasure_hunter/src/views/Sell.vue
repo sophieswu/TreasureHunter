@@ -2,8 +2,8 @@
     <div>
         <nav-header v-on:logged="getData"></nav-header>
         <AddSell v-on:logged="getData"></AddSell>
-
-        <UpdateSell v-bind:product="selectedProduct"></UpdateSell>
+        <UpdateSell v-bind:product="selectedProduct" v-on:logged="getData"></UpdateSell>
+       
         <nav-bread>
             <a href="\">Home</a>
             <a href="\sell">Sell</a>
@@ -203,9 +203,11 @@
                 this.$store.commit("updateModalUpdate", item.productId);
             },
             getData:function(data){
-                console.log("get!!!!");
+                console.log("getdata!!!!");
+                console.log("data",data)
                 if(data=="refresh"){
                     this.getSellList();
+                    console.log("data", this.getSellList());
                     return;
                 }
                 if(data) {
