@@ -110,7 +110,7 @@
                                 Potential Sales: <span class="total-price">{{totalPrice}}</span>
                             </div>
                             <div class="btn-wrap">
-                                <a class="btn btn--red" @click="sellModal">Sell Iem</a>
+                                <a class="btn btn--red" @click="sellModal">Sell Item</a>
                             </div>
                         </div>
                     </div>

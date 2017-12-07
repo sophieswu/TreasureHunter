@@ -11,7 +11,7 @@
       <div class="navbar">
         <div class="navbar-left-container">
           <a href="/">
-            <img width="200" height="40" class="navbar-brand-logo offset" src="static/logo.png"></a>
+            <img height="200" class="navbar-brand-logo offset" src="static/logo.png"></a>
         </div>
         <div class="navbar-right-container" style="display: flex;">
           <div class="navbar-menu-container">
@@ -35,7 +35,7 @@
         <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':loginModalFlag}">
           <div class="md-modal-inner">
             <div class="md-top">
-              <div class="md-title">Login in</div>
+              <div class="md-title">Login</div>
               <button class="md-close" @click="loginModalUpdate(closeForm())">Close</button>
             </div>
             <div class="md-content">

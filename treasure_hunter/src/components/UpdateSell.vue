@@ -2,7 +2,7 @@
   <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':updateModalFlag}">
     <div class="md-modal-inner">
       <div class="md-top">
-        <div class="md-title">Edit Listing</div>
+        <div class="md-title">Update Item Details</div>
         <button class="md-close" @click="registerModalFlag=closeForm()">Close</button>
       </div>
       <div class="md-content">
