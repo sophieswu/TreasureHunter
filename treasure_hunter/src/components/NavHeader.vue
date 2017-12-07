@@ -85,6 +85,10 @@
                     <i class="icon IconPwd"></i>
                     <input type="text" tabindex="2" name="fullName" v-model="fullname" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Full Name" >
                   </li>
+                  <li class="regi_form_input noMargin">
+                    <i class="icon IconPwd"></i>
+                    <input type="text" tabindex="3" name="telephone" v-model="telephone" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Telephone Number">
+                  </li>
                 </ul>
               </div>
               <div class="login-wrap">
