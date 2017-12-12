@@ -203,23 +203,18 @@
                 this.$store.commit("updateModalUpdate", item.productId);
             },
             getData:function(data){
-                console.log("getdata!!!!");
-                console.log("data",data)
                 if(data=="refresh"){
                     this.getSellList();
-                    console.log("data", this.getSellList());
                     return;
                 }
                 if(data) {
                     this.nickName1 = data.fullname;
-                    console.log("receive",data.fullname);
                 }
                 this.getSellList();
             },
             getSellList(){
                 console.log("mounted",this.nickName1);
                 if(!this.nickName1){
-                    console.log("wrong1",this.nickName1)
                     this.$store.commit("sellListUpdate", []);
                     return;
                 }
@@ -230,7 +225,6 @@
                     params: params
                 }).then((response) => {
                     let res = response.data;
-                    console.log(res);
                     if (res.status == 0){
                         this.$store.commit("sellListUpdate", res.result.list);
                     } else {
@@ -240,7 +234,6 @@
             },
 
             deleteSell(productName){
-                console.log('delete');
                 if(!this.$store.state.nickName){
                     this.$store.commit("loginModal", true);
                     return

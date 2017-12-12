@@ -233,14 +233,14 @@ router.post('/bid', function (req, res, next) {
         console.log(12323);
         res.json({
             status: '1',
-            result: 'errro'
+            result: 'error'
           });
         return;
       }
       if (!doc) {
         res.json({
             status: '1',
-            result: 'errro'
+            result: 'error'
           });
           return; 
       }
@@ -249,12 +249,12 @@ router.post('/bid', function (req, res, next) {
       doc.save(function (err3, doc3) {
         if (err3) {
           res.json({
-            status: "1",
+            status: 402,
             msg: err3.message
           })
         } else {
           res.json({
-            status: '0',
+            status: 200,
             result: 'suc'
           })
         }

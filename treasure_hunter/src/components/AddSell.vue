@@ -111,11 +111,10 @@ export default {
           this.errorMsg = "form missing or incorrect";
           return;
       }
-      console.log("mdzz");
+
       let data = new FormData();
       data.append('file', this.file);
       data.append('name', this.name);
-      console.log("97");
       data.append('price', this.price);
       data.append('seller', this.$store.state.nickName);
       if (this.isAuction == 'isAuction'){
@@ -125,10 +124,7 @@ export default {
       }
       const expiration =  new Date().setDate(new Date().getDate() + parseInt(this.expire))
       data.append('expire', expiration);
-      const a = new Date();
-      console.log(expiration,this.expire,a.getDate(),a,);
       data.append('productDescription', this.description);
-      console.log("96");
       axios.post("/items/addSell", data, {
         headers: {
           'accept': 'application/json',
@@ -136,14 +132,11 @@ export default {
           'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
         }
         }).then((response) => {
-          console.log("emithhhhhhh")
               let res = response.data;
               this.$store.commit("sellModalUpdate",);
               this.clearOutForm();
-              console.log("emithhhhhhh")
               this.$emit("logged","refresh");
         }).catch((err) => {
-          console.log("wrong")
             this.errorTip = true;
             this.errorMsg = err.message;
         });

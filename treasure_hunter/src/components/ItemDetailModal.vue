@@ -133,7 +133,6 @@ export default {
   },
     sockets: {
         newBid2(item) {
-            console.log('newbid2',item.winner);
             this.$store.commit("bid",item);
 
         }
@@ -166,14 +165,15 @@ export default {
             fullname: this.$store.state.nickName,
         }).then((res)=>{
             if(res.status==200){
+              console.log('now',res.status);
                 var item = {
                     bid:bid,
                     winner:this.$store.state.nickName
                 }
               this.$store.commit("bid", item);
                 this.$socket.emit('newBid', item);
-            } else {
-              console.log('fail');
+            } else if (res.status==402){
+
             }
         });
     },
