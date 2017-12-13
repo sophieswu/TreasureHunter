@@ -4,12 +4,9 @@
     <MessageModal></MessageModal>
     <ItemModal></ItemModal>
     <nav-bread>
-      <!-- <a href="\">Buy it Now</a>
-      <a href="\">Auctions</a> -->
           <a href="\">Home</a>
           <a href="\sell">Sell</a>
           <a href="\Cart">Cart</a>
-      <!-- <a href="\Chat">Chatroom</a> Chat -->
     </nav-bread>
     <div class="accessory-result-page accessory-page">
       <div class="container">
@@ -144,7 +141,6 @@ export default {
       ],
       priceSelected: 'all',
       filterBy: false,
-      // overLayFlag: false,
     }
   },
   components: {
@@ -256,15 +252,8 @@ export default {
       if(!item.auction.isAuction){
         return;
       }
-      console.log(item);
       this.$store.commit("itemModalUpdate", item);
-      console.log('expire',item.auction.expire);
       this.$store.commit("expireUpdate", item.auction.expire);
-
-      var now = new Date().setDate(new Date().getDate());
-      var end = new Date(this.$store.state.expire);
-      var tl = end - now;
-      console.log('xixixi',end,now,this.$store.state.expire,tl);
       this.$store.commit("showPop");
     }
   }

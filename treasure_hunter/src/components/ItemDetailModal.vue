@@ -133,7 +133,7 @@ export default {
   },
     sockets: {
         newBid2(item) {
-            this.$store.commit("bid",item);
+            this.$store.commit("bid",item); // update all other clients auction window
 
         }
     },
@@ -162,18 +162,17 @@ export default {
             fullname: this.$store.state.nickName,
             productId: this.$store.state.productID,
             bidPrice: this.$store.state.price + bid,
-            fullname: this.$store.state.nickName,
         }).then((res)=>{
             if(res.status==200){
-              console.log('now',res.status);
-                var item = {
+                let item = {
                     bid:bid,
                     winner:this.$store.state.nickName
                 }
-              this.$store.commit("bid", item);
-                this.$socket.emit('newBid', item);
+              this.$store.commit("bid", item); //update the bidder self auction window
+              this.$socket.emit("newBid", item); // trigger the newBid app.js listening on 
             } else if (res.status==402){
-
+                console.log('error',res.satus);
+              
             }
         });
     },

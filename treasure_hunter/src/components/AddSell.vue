@@ -125,6 +125,7 @@ export default {
       const expiration =  new Date().setDate(new Date().getDate() + parseInt(this.expire))
       data.append('expire', expiration);
       data.append('productDescription', this.description);
+      
       axios.post("/items/addSell", data, {
         headers: {
           'accept': 'application/json',

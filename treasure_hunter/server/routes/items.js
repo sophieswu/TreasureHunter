@@ -221,12 +221,10 @@ router.post('/addCart',function(req,res,next){
 });
 
 router.post('/bid', function (req, res, next) {
-    console.log(req.body);
     let fullname = req.body.fullname;
-    var Id = req.body.productId;
-    var newBid = req.body.bidPrice;
-    var Item = require('../models/item');
-    console.log(Id);
+    let Id = req.body.productId;
+    let newBid = req.body.bidPrice;
+    let Item = require('../models/item');
 
     Item.findOne({ productId: Id }, function (err, doc) {
       if (err) {
@@ -290,14 +288,6 @@ const upload = multer({
         cb(null, {fieldName: file.fieldname});
       },
       key: function (req, file, cb) {
-        cb(null, Date.now().toString())
-      },
-
-
-      metadata: function (req, file, cb) {
-        cb(null, {fieldName: file.fieldname});
-      },
-      key: function (req, file, cb) {
         cb(null,`${Date.now().toString()}-${file.originalname}`)
       }
     })
@@ -323,7 +313,6 @@ router.post('/addSell', upload.single('file'), function(req,res,next){
             productName: name,
             soldBy: soldBy,
             productDescription:productDescription,
-            productId:productId,
             productImg: location,
             productNum: 1,
             checked: '',

@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
   console.log('a user connected');
     socket.on('newBid', (item) => {
         console.log('receive newbid',item.winner);
-        socket.broadcast.emit('newBid2', item);
+        socket.broadcast.emit('newBid2', item); // update all other users' auction winder except bidder self
     });
 
 
